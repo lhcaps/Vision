@@ -501,12 +501,14 @@ Phase 20B summary stated that seed hash was aligned with the runtime. Upon close
 Phase 21A established the app composition boundary. `App.tsx` is now the thin composition root. All route rendering is in `AppRoutes.tsx`. All panel components are in the `app/` directory.
 
 **Files extracted (commit 86416bf):**
+
 - `AppRoutes.tsx` — route rendering with conditional panel display
 - `OverviewPanel.tsx`, `MediaPanel.tsx`, `DatasetPanel.tsx`, `PipelinePanel.tsx`, `JobsPanel.tsx` — panel components
 - `Panel`, `VisionPreview`, `StateRow`, `OverviewStateRow` — shared UI primitives
 - `NavRail`, `ShellHeader`, `ReadinessStrip`, `StatusPill` — shell components
 
 **Import cleanup (this pass):**
+
 - Removed 11 unused icon imports from App.tsx
 - Removed 8 unused type imports from App.tsx
 - Removed 40+ unused value/component imports from App.tsx
@@ -517,17 +519,20 @@ Phase 21A established the app composition boundary. `App.tsx` is now the thin co
 - Removed unused `MediaInspectorData`/`DatasetInspectorData` type imports from AppRoutes.tsx
 
 **App.tsx line counts:**
+
 - Before Phase 21A: 799 lines
 - After extraction (86416bf): 638 lines
 - After cleanup (this pass): 548 lines
 
 **Boundary maintained:**
+
 - `app/` imports `features/` — correct
 - `features/` does not import `app/` — correct
 - `shared/` does not import `app/` or `features/` — correct
 - No circular dependencies
 
 **Not changed:**
+
 - No hook extraction — reserved for Phase 21B
 - No state management changes — React useState/useEffect remain
 - No backend changes

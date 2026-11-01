@@ -8,15 +8,15 @@
 
 ## Score Breakdown
 
-| Dimension | Score | Notes |
-|---|---|---|
-| Ground truth overlay (Jobs) | 0/10 → 10/10 | Was passing `groundTruth={[]}` — fixed |
-| Ground truth overlay (Timeline) | 0/10 → 10/10 | Was passing `groundTruth={[]}` — fixed |
-| Overview pipeline text | 5/10 → 10/10 | Was claiming "validated and ready" with no dynamic check — fixed |
-| InspectorRouter stub | N/A (21D scope) | Explicitly deferred to 21D — not a Phase 21C failure |
-| Prop surface reduction | 10/10 | 23 → 17 props (26% reduction) |
-| Artifact completeness | 5/10 → 10/10 | ROADMAP and MILESTONES updated; 21C-REVIEW.md now created |
-| **Overall within Phase 21C scope** | **10/10** | Prop-surface cleanup complete, behavior regressions fixed, InspectorRouter state sync explicitly moved to 21D scope |
+| Dimension                          | Score           | Notes                                                                                                               |
+| ---------------------------------- | --------------- | ------------------------------------------------------------------------------------------------------------------- |
+| Ground truth overlay (Jobs)        | 0/10 → 10/10    | Was passing `groundTruth={[]}` — fixed                                                                              |
+| Ground truth overlay (Timeline)    | 0/10 → 10/10    | Was passing `groundTruth={[]}` — fixed                                                                              |
+| Overview pipeline text             | 5/10 → 10/10    | Was claiming "validated and ready" with no dynamic check — fixed                                                    |
+| InspectorRouter stub               | N/A (21D scope) | Explicitly deferred to 21D — not a Phase 21C failure                                                                |
+| Prop surface reduction             | 10/10           | 23 → 17 props (26% reduction)                                                                                       |
+| Artifact completeness              | 5/10 → 10/10    | ROADMAP and MILESTONES updated; 21C-REVIEW.md now created                                                           |
+| **Overall within Phase 21C scope** | **10/10**       | Prop-surface cleanup complete, behavior regressions fixed, InspectorRouter state sync explicitly moved to 21D scope |
 
 ---
 
@@ -49,7 +49,7 @@ const seededGroundTruth = useMemo(() => createSeedAnnotationSummaries(), []);
 And passes it to both `JobsPanel` and `TimelineReplayPanel`:
 
 ```tsx
-groundTruth={seededGroundTruth}
+groundTruth = { seededGroundTruth };
 ```
 
 `createSeedAnnotationSummaries()` is the same function used by `AnnotationEnginePanel` to initialize its local state — this ensures consistency.
@@ -115,14 +115,13 @@ The AnnotationInspector and PipelineInspector cannot interact with real panel st
 
 ## Artifact Gaps (Fixed in This Commit)
 
-| Gap | Status |
-|---|---|
+| Gap                                                      | Status                                               |
+| -------------------------------------------------------- | ---------------------------------------------------- |
 | `ROADMAP.md` Phase 21C commit listed as `pending commit` | Fixed — now references `d667962e` and the fix commit |
-| `MILESTONES.md` Phase 21C not in completion list | Fixed — Phase 21 now marked ✅ Done |
-| `21C-REVIEW.md` missing | Created by this commit |
+| `MILESTONES.md` Phase 21C not in completion list         | Fixed — Phase 21 now marked ✅ Done                  |
+| `21C-REVIEW.md` missing                                  | Created by this commit                               |
 
 ---
-
 
 ## Phase Boundary Decision
 
@@ -135,16 +134,16 @@ Therefore Phase 21C is **closed as complete** for AppRoutes prop-surface reducti
 
 ## Verification Checklist
 
-| Check | Status |
-|---|---|
-| `pnpm --filter @visionflow/web typecheck` | Expected PASS |
-| `pnpm --filter @visionflow/web test` | Expected PASS (65 tests) |
-| `pnpm --filter @visionflow/web lint` | Expected PASS |
-| `pnpm --filter @visionflow/web build` | Expected PASS |
-| Jobs overlay shows GT boxes (browser smoke) | Required |
-| Timeline overlay shows GT boxes | Required |
-| Overview pipeline text is neutral | Verified |
-| InspectorRouter stub documented as 21D limitation | Verified |
+| Check                                             | Status                   |
+| ------------------------------------------------- | ------------------------ |
+| `pnpm --filter @visionflow/web typecheck`         | Expected PASS            |
+| `pnpm --filter @visionflow/web test`              | Expected PASS (65 tests) |
+| `pnpm --filter @visionflow/web lint`              | Expected PASS            |
+| `pnpm --filter @visionflow/web build`             | Expected PASS            |
+| Jobs overlay shows GT boxes (browser smoke)       | Required                 |
+| Timeline overlay shows GT boxes                   | Required                 |
+| Overview pipeline text is neutral                 | Verified                 |
+| InspectorRouter stub documented as 21D limitation | Verified                 |
 
 ---
 

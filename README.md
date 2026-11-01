@@ -136,29 +136,29 @@ To record a demo GIF or MP4, see the recording tips in [docs/demo/DEMO-CHECKLIST
 
 ### v1.1 — Production Hardening & Real Vertical Slice (Complete)
 
-| Feature                    | Status     | Target Phase         |
-| -------------------------- | ---------- | -------------------- |
-| Professional README        | ✅ Done    | Phase 11 (complete)  |
-| CI completeness            | ✅ Done    | Phase 12A            |
-| Local stack & seed         | ✅ Done    | Phase 12B            |
-| Security hardening         | ✅ Done    | Phase 13 (complete)  |
-| Adapter boundary cleanup   | ✅ Done    | Phase 14A (complete) |
-| Domain invariants          | ✅ Done    | Phase 14B (complete) |
-| Observability & health     | ✅ Done    | Phase 15             |
-| Frontend feature split (minimum) | ✅ Done    | Phase 16A           |
-| Frontend split completion       | ✅ Done    | Phase 21 (complete)   |
-| Real media processing      | ✅ Done    | Phase 17             |
-| Dataset lock & COCO export | ✅ Done    | Phase 18             |
-| Real ONNX inference        | ✅ Done    | Phase 19 (complete)  |
-| Evaluation E2E             | ✅ Done    | Phase 20 (complete)  |
-| Evaluation Correctness     | ✅ Done    | Phase 20B (complete) |
-| Evaluation Persistence     | ✅ Done    | Phase 20D (complete) |
-| Evaluation Migration       | ✅ Done    | Phase 20E (complete) |
-| Evaluation Migration Chain | ✅ Done    | Phase 20F (complete) |
-| Frontend split completion  | ✅ Done    | Phase 21 (complete)  |
-| Fixture & Test Infrastructure | ✅ Done    | Phase 22A (complete)  |
-| Production test suite      | ✅ Done    | Phase 22B (complete)  |
-| Full E2E proof + demo docs | ✅ Done    | Phase 23 (complete, demo media deferred) |
+| Feature                          | Status  | Target Phase                             |
+| -------------------------------- | ------- | ---------------------------------------- |
+| Professional README              | ✅ Done | Phase 11 (complete)                      |
+| CI completeness                  | ✅ Done | Phase 12A                                |
+| Local stack & seed               | ✅ Done | Phase 12B                                |
+| Security hardening               | ✅ Done | Phase 13 (complete)                      |
+| Adapter boundary cleanup         | ✅ Done | Phase 14A (complete)                     |
+| Domain invariants                | ✅ Done | Phase 14B (complete)                     |
+| Observability & health           | ✅ Done | Phase 15                                 |
+| Frontend feature split (minimum) | ✅ Done | Phase 16A                                |
+| Frontend split completion        | ✅ Done | Phase 21 (complete)                      |
+| Real media processing            | ✅ Done | Phase 17                                 |
+| Dataset lock & COCO export       | ✅ Done | Phase 18                                 |
+| Real ONNX inference              | ✅ Done | Phase 19 (complete)                      |
+| Evaluation E2E                   | ✅ Done | Phase 20 (complete)                      |
+| Evaluation Correctness           | ✅ Done | Phase 20B (complete)                     |
+| Evaluation Persistence           | ✅ Done | Phase 20D (complete)                     |
+| Evaluation Migration             | ✅ Done | Phase 20E (complete)                     |
+| Evaluation Migration Chain       | ✅ Done | Phase 20F (complete)                     |
+| Frontend split completion        | ✅ Done | Phase 21 (complete)                      |
+| Fixture & Test Infrastructure    | ✅ Done | Phase 22A (complete)                     |
+| Production test suite            | ✅ Done | Phase 22B (complete)                     |
+| Full E2E proof + demo docs       | ✅ Done | Phase 23 (complete, demo media deferred) |
 
 ### Out of Scope
 
@@ -468,26 +468,26 @@ pnpm --filter @visionflow/web test:e2e -- e2e/full-vertical-slice.spec.ts --proj
 
 ## Environment Variables
 
-| Variable                    | Default                               | Description                                     |
-| --------------------------- | ------------------------------------- | ----------------------------------------------- |
-| `DATABASE_URL`              | `postgresql://...@localhost:5432/...` | PostgreSQL connection string                    |
-| `REDIS_HOST`                | `localhost`                           | Redis host                                      |
-| `REDIS_PORT`                | `6379`                                | Redis port                                      |
-| `MINIO_ENDPOINT`            | `localhost`                           | MinIO endpoint                                  |
-| `MINIO_PORT`                | `9000`                                | MinIO port                                      |
-| `MINIO_ACCESS_KEY`          | `visionflow`                          | MinIO access key                                |
-| `MINIO_SECRET_KEY`          | `visionflow-secret`                   | MinIO secret key                                |
-| `MINIO_BUCKET`              | `visionflow-artifacts`                | MinIO bucket name                               |
-| `API_PORT`                  | `3000`                                | API server port                                 |
-| `API_BASE_URL`              | `http://localhost:3000/api`           | Harness → API base URL (harnesses use this)    |
-| `CV_WORKER_URL`             | `http://localhost:8000`               | CV Worker URL                                   |
-| `CV_WORKER_DETECTOR_MODE`   | `mock`                                | Detector mode (`mock` or `onnx`)                |
-| `VITE_API_BASE_URL`         | `http://localhost:3000`               | Web → API base URL (no `/api` suffix)          |
+| Variable                    | Default                               | Description                                                            |
+| --------------------------- | ------------------------------------- | ---------------------------------------------------------------------- |
+| `DATABASE_URL`              | `postgresql://...@localhost:5432/...` | PostgreSQL connection string                                           |
+| `REDIS_HOST`                | `localhost`                           | Redis host                                                             |
+| `REDIS_PORT`                | `6379`                                | Redis port                                                             |
+| `MINIO_ENDPOINT`            | `localhost`                           | MinIO endpoint                                                         |
+| `MINIO_PORT`                | `9000`                                | MinIO port                                                             |
+| `MINIO_ACCESS_KEY`          | `visionflow`                          | MinIO access key                                                       |
+| `MINIO_SECRET_KEY`          | `visionflow-secret`                   | MinIO secret key                                                       |
+| `MINIO_BUCKET`              | `visionflow-artifacts`                | MinIO bucket name                                                      |
+| `API_PORT`                  | `3000`                                | API server port                                                        |
+| `API_BASE_URL`              | `http://localhost:3000/api`           | Harness → API base URL (harnesses use this)                            |
+| `CV_WORKER_URL`             | `http://localhost:8000`               | CV Worker URL                                                          |
+| `CV_WORKER_DETECTOR_MODE`   | `mock`                                | Detector mode (`mock` or `onnx`)                                       |
+| `VITE_API_BASE_URL`         | `http://localhost:3000`               | Web → API base URL (no `/api` suffix)                                  |
 | `VITE_WEB_BASE_URL`         | `http://localhost:5173`               | Playwright baseURL (fallback; Playwright manages its own server in CI) |
-| `WEB_ORIGIN`                | `http://localhost:5173`               | Allowed CORS origins (comma-separated)          |
-| `SIGNED_URL_EXPIRY_SECONDS` | `3600`                                | Signed URL expiry (0 = use API proxy)           |
-| `LOG_LEVEL`                 | `info`                                | Log level: debug, info, warn, error             |
-| `HEALTH_CHECK_TIMEOUT_MS`   | `5000`                                | Timeout for health check dependency probes (ms) |
+| `WEB_ORIGIN`                | `http://localhost:5173`               | Allowed CORS origins (comma-separated)                                 |
+| `SIGNED_URL_EXPIRY_SECONDS` | `3600`                                | Signed URL expiry (0 = use API proxy)                                  |
+| `LOG_LEVEL`                 | `info`                                | Log level: debug, info, warn, error                                    |
+| `HEALTH_CHECK_TIMEOUT_MS`   | `5000`                                | Timeout for health check dependency probes (ms)                        |
 
 ## Project Structure
 

@@ -1,9 +1,11 @@
 # Phase 21B Plan — FE/BE Runtime Sync and Controller Extraction
 
 ## Goal
+
 Synchronize frontend runtime readiness with real backend/CV worker state, remove stale hard-coded readiness labels, and extract App.tsx orchestration into controller hooks.
 
 ## Context
+
 Phase 21A established the app composition boundary. `App.tsx` was reduced from 799 to 529 lines. It still owns dataset loading, inference job SSE/polling, evaluation fetch/run, runtimeState derivation, and startJob. ReadinessStrip still uses static/hard-coded readiness text ("Mock detector mounted"). The frontend reads nothing from the backend about actual runtime state.
 
 ## Scope
@@ -13,6 +15,7 @@ Phase 21A established the app composition boundary. `App.tsx` was reduced from 7
 **Goal:** Add `GET /api/health/runtime/status` returning real state of API, database, queue, and CV worker.
 
 **Implementation:**
+
 - Extend `HealthService` with `getRuntimeStatus()` method
 - Add `RuntimeStatusResponseDto` and `RuntimeStatusResponseSchema` (Zod)
 - Endpoint returns 200 even if CV worker is down (only marks `cvWorker.ok = false`)
@@ -20,6 +23,7 @@ Phase 21A established the app composition boundary. `App.tsx` was reduced from 7
 - No secret leaking (model paths masked)
 
 **Contract:**
+
 ```typescript
 RuntimeStatusResponse = {
   api: { ok: boolean; mode: 'database' | 'memory' | 'unknown' };
@@ -41,6 +45,7 @@ RuntimeStatusResponse = {
 **Goal:** Replace client-side guessing with real backend data.
 
 **Implementation:**
+
 - Create `features/runtime/runtime.api.ts` — calls `/api/health/runtime/status`
 - Create `features/runtime/runtime.types.ts` — derived state types (CvReadinessState, QueueReadinessState, etc.)
 - Create `features/runtime/useRuntimeStatus.ts` — polls every 8s, exposes loading/error/data
@@ -51,6 +56,7 @@ RuntimeStatusResponse = {
 **Goal:** `ReadinessStrip` reflects real state. `App.tsx` shrinks.
 
 **ReadinessStrip:**
+
 - Replace hard-coded "Mock detector mounted" with real runtime data
 - States: ONNX detector ready / ONNX configured unavailable / Mock fallback / Worker unavailable / Loading / Unknown
 - Queue states: BullMQ ready / Memory fallback / Unavailable / Loading / Unknown
@@ -68,6 +74,7 @@ RuntimeStatusResponse = {
 ### 21B.4 — Browser Smoke
 
 **Checklist:**
+
 - App loads at http://localhost:5173
 - ReadinessStrip shows ONNX detector ready if env ONNX + worker healthy
 - ReadinessStrip shows correct fallback states when services are down
@@ -75,6 +82,7 @@ RuntimeStatusResponse = {
 - Navigation between sections works
 
 ## Verification
+
 - [x] `pnpm --filter @visionflow/contracts typecheck` — pass
 - [x] `pnpm --filter @visionflow/api typecheck` — pass
 - [x] `pnpm --filter @visionflow/web typecheck` — pass
@@ -88,6 +96,7 @@ RuntimeStatusResponse = {
 - [ ] Browser smoke: Navigation across sections
 
 ## Non-Goals
+
 - No UI redesign
 - No new state management library (Redux/Zustand/React Query)
 - No algorithm changes
@@ -95,16 +104,20 @@ RuntimeStatusResponse = {
 - No breaking contract changes
 
 ## Files
+
 ### New (backend)
+
 - `apps/api/src/health/dto/runtime-status-response.dto.ts`
 
 ### Modified (backend)
+
 - `apps/api/src/health/health.service.ts` — added `getRuntimeStatus()`
 - `apps/api/src/health/health.controller.ts` — added `/runtime/status` endpoint
 - `packages/contracts/src/cv-worker.ts` — added RuntimeStatus schemas
 - `packages/contracts/src/index.ts` — re-exported RuntimeStatus types
 
 ### New (frontend)
+
 - `apps/web/src/features/runtime/runtime.api.ts`
 - `apps/web/src/features/runtime/runtime.types.ts`
 - `apps/web/src/features/runtime/useRuntimeStatus.ts`
@@ -114,5 +127,6 @@ RuntimeStatusResponse = {
 - `apps/web/src/features/inference/useEvaluationController.ts`
 
 ### Modified (frontend)
+
 - `apps/web/src/app/ReadinessStrip.tsx` — uses `useRuntimeStatus` hook
 - `apps/web/src/App.tsx` — uses extracted controllers

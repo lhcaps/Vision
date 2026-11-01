@@ -30,9 +30,7 @@ import type {
   PipelineValidationIssue,
   PipelineValidationResult,
 } from '@visionflow/contracts';
-import {
-  validatePipelineDefinition,
-} from '@visionflow/contracts';
+import { validatePipelineDefinition } from '@visionflow/contracts';
 import { Panel } from './ui/Panel';
 import { StateRow } from './ui/StateRow';
 import { VisionPreview } from './ui/VisionPreview';

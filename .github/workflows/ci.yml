@@ -13,7 +13,7 @@ concurrency:
 jobs:
   lint:
     name: Lint
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     steps:
       - uses: actions/checkout@v4
       - uses: pnpm/action-setup@v4
@@ -29,7 +29,7 @@ jobs:
 
   typecheck:
     name: Type Check
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     needs: lint
     steps:
       - uses: actions/checkout@v4
@@ -49,7 +49,7 @@ jobs:
 
   format:
     name: Format Check
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     needs: lint
     steps:
       - uses: actions/checkout@v4
@@ -67,7 +67,7 @@ jobs:
 
   pytest:
     name: Pytest
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     needs: lint
     steps:
       - uses: actions/checkout@v4
@@ -87,7 +87,7 @@ jobs:
 
   test:
     name: Test
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     needs: lint
     services:
       postgres:
@@ -116,7 +116,7 @@ jobs:
       - run: pnpm db:generate
         env:
           DATABASE_URL: postgresql://test:test@localhost:5432/test
-      - run: pnpm db:push
+      - run: pnpm db:migrate:deploy
         env:
           DATABASE_URL: postgresql://test:test@localhost:5432/test
       - run: pnpm test
@@ -133,7 +133,7 @@ jobs:
 
   db-harness:
     name: DB Harness
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     needs: [typecheck, test]
     services:
       postgres:
@@ -162,7 +162,7 @@ jobs:
       - run: pnpm db:generate
         env:
           DATABASE_URL: postgresql://test:test@localhost:5432/test
-      - run: pnpm db:push
+      - run: pnpm db:migrate:deploy
         env:
           DATABASE_URL: postgresql://test:test@localhost:5432/test
       - run: pnpm build
@@ -187,7 +187,7 @@ jobs:
 
   migration-chain:
     name: Migration Chain
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     needs: [lint]
     services:
       postgres:
@@ -249,7 +249,7 @@ jobs:
 
   build:
     name: Build
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     needs: [typecheck, format, pytest, test, db-harness, migration-chain]
     steps:
       - uses: actions/checkout@v4

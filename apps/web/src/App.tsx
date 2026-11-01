@@ -29,11 +29,7 @@ export function App() {
     const { api, database, queue, cvWorker } = runtimeStatus.readiness;
 
     const apiHealth: WorkbenchRuntimeState['health']['api'] =
-      api.kind === 'connected'
-        ? 'connected'
-        : api.kind === 'loading'
-          ? 'loading'
-          : 'unavailable';
+      api.kind === 'connected' ? 'connected' : api.kind === 'loading' ? 'loading' : 'unavailable';
 
     const dbHealth: WorkbenchRuntimeState['health']['database'] =
       database.kind === 'ready'
@@ -87,13 +83,8 @@ export function App() {
 
   const { job, startJob } = useInferenceJobController();
 
-  const {
-    evaluationReport,
-    isEvaluating,
-    evaluationError,
-    predictions,
-    handleRunEvaluation,
-  } = useEvaluationController(job);
+  const { evaluationReport, isEvaluating, evaluationError, predictions, handleRunEvaluation } =
+    useEvaluationController(job);
 
   // Derive runtime state from resolved API data and backend runtime status.
   // Every selector (canRunInference, canRunEvaluation) consumes this state.
@@ -126,7 +117,14 @@ export function App() {
         worker: runtimeHealth.worker,
       },
     };
-  }, [job, predictions, evaluationReport, datasetVersions, selectedDatasetVersionId, runtimeHealth]);
+  }, [
+    job,
+    predictions,
+    evaluationReport,
+    datasetVersions,
+    selectedDatasetVersionId,
+    runtimeHealth,
+  ]);
 
   // Resolve eligibility from runtime state
   const inferenceEligibility = useMemo(() => canRunInference(runtimeState), [runtimeState]);
@@ -142,11 +140,7 @@ export function App() {
       <div className="app-grid min-h-[100dvh]">
         <NavRail active={section} onSelect={setSection} />
         <main className="min-w-0">
-          <ShellHeader
-            job={job}
-            onRun={handleRun}
-            inferenceEligibility={inferenceEligibility}
-          />
+          <ShellHeader job={job} onRun={handleRun} inferenceEligibility={inferenceEligibility} />
           <AppRoutes
             section={section}
             job={job}

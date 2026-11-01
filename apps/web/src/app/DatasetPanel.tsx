@@ -15,7 +15,14 @@ import {
 } from '@visionflow/contracts';
 import { motionTokens } from '@visionflow/motion';
 import { demoSnapshot } from '../data/demo';
-import { assignDatasetVersionAssets, createDataset, createDatasetVersion, listDatasetVersions, listProjectDatasets, lockDatasetVersion } from '../lib/datasets';
+import {
+  assignDatasetVersionAssets,
+  createDataset,
+  createDatasetVersion,
+  listDatasetVersions,
+  listProjectDatasets,
+  lockDatasetVersion,
+} from '../lib/datasets';
 import type { MediaUploadRow } from '../features/media';
 import { datasetSplits, type DatasetActionState, type DatasetSourceState } from './section.types';
 import { MediaStatusPill } from './MediaPanel';

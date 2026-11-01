@@ -97,9 +97,7 @@ function createTimeoutSignal(ms: number): AbortSignal {
 async function isApiReachable(): Promise<boolean> {
   // Harness uses API_BASE_URL (prefix-included). Frontend uses VITE_API_BASE_URL (host-only).
   // These are different conventions — do NOT fall back from one to the other.
-  const API_BASE_URL =
-    process.env.API_BASE_URL ||
-    'http://localhost:3000/api';
+  const API_BASE_URL = process.env.API_BASE_URL || 'http://localhost:3000/api';
 
   try {
     const res = await fetch(`${API_BASE_URL.replace(/\/$/, '')}/health`, {
@@ -125,7 +123,8 @@ async function main() {
   if (shouldRunApiHarness) {
     logInfo(`API appears reachable — Phase 22B API harness will run.`);
     if (withApi) logInfo(`--with-api flag explicitly set.`);
-    if (apiReachable && !withApi) logInfo(`(auto-detected, override with --with-api to suppress warning)`);
+    if (apiReachable && !withApi)
+      logInfo(`(auto-detected, override with --with-api to suppress warning)`);
   } else {
     logInfo(`API not reachable — Phase 22B API harness will be skipped.`);
     logInfo(`Pass --with-api to attempt anyway, or start the stack first.`);
@@ -154,7 +153,9 @@ async function main() {
       if (phase22aMeta.passed) {
         logPass(`phase22a-meta-harness PASSED (${phase22aMeta.durationMs}ms)`);
       } else {
-        logFail(`phase22a-meta-harness FAILED (${phase22aMeta.durationMs}ms) — ${phase22aMeta.error}`);
+        logFail(
+          `phase22a-meta-harness FAILED (${phase22aMeta.durationMs}ms) — ${phase22aMeta.error}`
+        );
       }
     }
   }

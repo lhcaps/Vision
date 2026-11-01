@@ -7,6 +7,7 @@
 Phase 21A is complete after two cleanup rounds. Round 1 (27d78bb) addressed bulk import removal. Round 2 (2f3a1c4) fixed residual unused imports found by brutal audit.
 
 Score breakdown:
+
 - Route extraction: 9/10
 - App.tsx reduction: 9/10
 - Import cleanup: 9/10 (9 more unused imports found and fixed in round 2)
@@ -30,10 +31,12 @@ Remaining gap to 10/10: root `pnpm test` has 1 pre-existing unrelated failure; r
 `Panel`, `OverviewPanel`, `MediaPanel`, `DatasetPanel`, `PipelinePanel`, `JobsPanel`, `VisionPreview`, `StateRow`, `buildDatasetInspectorData`, `buildMediaInspectorData`, `AnnotationEnginePanel`, `AnnotationInspector`, `DatasetInspector`, `InspectorRouter`, `JobInspector`, `MediaInspector`, `PipelineInspector`, `EmptyState`, `EvaluationEmptyState`, `MediaEmptyState`, `DatasetEmptyState`, `PredictionsEmptyState`, `ErrorState`, `FailedJobErrorState`, `ActionHint`, `Background`, `Controls`, `Edge as FlowEdge`, `MarkerType`, `Node as FlowNode`, `Position`, `ReactFlow`, `AnimatePresence`, `motion`, `useReducedMotion`, `motionTokens`, `createEmptySplitSummary`, `SplitSummary`, `summarizeDatasetSplits`, `validateMediaMime`, `EvaluationMetricsPanel`, `PredictionOverlayCanvas`, `TimelineReplayPanel`, `DatasetVersionDiff`, `PipelineExecutionFlow`, `assignDatasetVersionAssets`, `createDataset`, `createDatasetVersion`, `lockDatasetVersion`, `checksumFile`, `uploadMediaFile`, `updateProjectPipeline`, `validateProjectPipeline`, `canShowPredictionOverlay`, `datasetSplits`, `DatasetActionState`, `DatasetSourceState`, `PipelineSourceState`
 
 **Removed dead derived values (2):**
+
 - `visibleMediaRows` — duplicated; `AppRoutes.tsx` computes it independently
 - `showPipelineExecution` — computed but never consumed
 
 **Removed unused hook (1):**
+
 - `useRef`
 
 ### App.tsx Import Cleanup — Round 2 (2f3a1c4) — Residual Unused Imports
@@ -106,11 +109,13 @@ Grep across all `.tsx` files in `src/` for `from '../app'` and `from './app'` �
 ## Behavior Preservation Review
 
 ### Route Behavior
+
 - All routes (`overview`, `media`, `datasets`, `annotate`, `pipeline`, `jobs`, `timeline`, `diff`) render identically
 - No route logic changed in `App.tsx`
 - `AppRoutes` uses the same route-to-panel mapping
 
 ### State Behavior
+
 - All state is still managed in `App.tsx` — no state moved
 - All effects (dataset loading, SSE, polling, evaluation fetching) remain in `App.tsx`
 - No behavior changes to runtime state derivation
@@ -140,31 +145,31 @@ Grep across all `.tsx` files in `src/` for `from '../app'` and `from './app'` �
 
 ## Verification Checklist
 
-| Check | Status | Notes |
-|---|---|---|
-| App.tsx has no unused imports | ✅ Done (round 1 + round 2) | |
-| AppRoutes.tsx has no unused imports | ✅ Done (round 1 + round 2) | |
-| `visibleMediaRows` dead code removed | ✅ Done | |
-| `showPipelineExecution` dead code removed | ✅ Done | |
-| `useRef` unused hook removed | ✅ Done | |
-| `ActivityIcon`, `StatusPill`, etc. removed | ✅ Done (round 2) | |
-| `MediaInspectorData`/`DatasetInspectorData` removed | ✅ Done (round 2) | |
-| `pnpm --filter @visionflow/web typecheck` | ✅ PASS | |
-| `pnpm --filter @visionflow/web test` | ✅ PASS (63/63) | |
-| `pnpm --filter @visionflow/web lint` | ✅ PASS | |
-| `pnpm --filter @visionflow/web build` | ✅ PASS | |
-| Touched files pass Prettier check | ✅ PASS | |
-| `pnpm typecheck` (root) | ✅ PASS | |
-| `pnpm test` (root) | ⚠️ PARTIAL FAIL | 1 pre-existing unrelated flaky API test |
-| `pnpm lint` (root) | ✅ PASS | |
-| `pnpm format:check` (root) | ❌ FAIL | 17 pre-existing unrelated format failures |
-| No backend files changed | ✅ Confirmed | |
-| No .cursor files changed | ✅ Confirmed | |
-| No .metaharness files changed | ✅ Confirmed | |
-| No circular imports | ✅ Confirmed | |
-| No route behavior changed | ✅ Confirmed | |
-| App.tsx contains orchestration only | ✅ Confirmed | |
-| Boundary: `app/` → `features/` only | ✅ Confirmed | |
-| Boundary: `shared/` → no `app/` or `features/` | ✅ Confirmed | |
+| Check                                               | Status                      | Notes                                     |
+| --------------------------------------------------- | --------------------------- | ----------------------------------------- |
+| App.tsx has no unused imports                       | ✅ Done (round 1 + round 2) |                                           |
+| AppRoutes.tsx has no unused imports                 | ✅ Done (round 1 + round 2) |                                           |
+| `visibleMediaRows` dead code removed                | ✅ Done                     |                                           |
+| `showPipelineExecution` dead code removed           | ✅ Done                     |                                           |
+| `useRef` unused hook removed                        | ✅ Done                     |                                           |
+| `ActivityIcon`, `StatusPill`, etc. removed          | ✅ Done (round 2)           |                                           |
+| `MediaInspectorData`/`DatasetInspectorData` removed | ✅ Done (round 2)           |                                           |
+| `pnpm --filter @visionflow/web typecheck`           | ✅ PASS                     |                                           |
+| `pnpm --filter @visionflow/web test`                | ✅ PASS (63/63)             |                                           |
+| `pnpm --filter @visionflow/web lint`                | ✅ PASS                     |                                           |
+| `pnpm --filter @visionflow/web build`               | ✅ PASS                     |                                           |
+| Touched files pass Prettier check                   | ✅ PASS                     |                                           |
+| `pnpm typecheck` (root)                             | ✅ PASS                     |                                           |
+| `pnpm test` (root)                                  | ⚠️ PARTIAL FAIL             | 1 pre-existing unrelated flaky API test   |
+| `pnpm lint` (root)                                  | ✅ PASS                     |                                           |
+| `pnpm format:check` (root)                          | ❌ FAIL                     | 17 pre-existing unrelated format failures |
+| No backend files changed                            | ✅ Confirmed                |                                           |
+| No .cursor files changed                            | ✅ Confirmed                |                                           |
+| No .metaharness files changed                       | ✅ Confirmed                |                                           |
+| No circular imports                                 | ✅ Confirmed                |                                           |
+| No route behavior changed                           | ✅ Confirmed                |                                           |
+| App.tsx contains orchestration only                 | ✅ Confirmed                |                                           |
+| Boundary: `app/` → `features/` only                 | ✅ Confirmed                |                                           |
+| Boundary: `shared/` → no `app/` or `features/`      | ✅ Confirmed                |                                           |
 
 **Phase 21A is 9.5/10.** Route extraction, composition boundary, and import cleanup are solid. Score docked for: residual unused imports (fixed in round 2), pre-existing test/format failures not from Phase 21A, browser smoke not run, and artifact overclaim in round 1.

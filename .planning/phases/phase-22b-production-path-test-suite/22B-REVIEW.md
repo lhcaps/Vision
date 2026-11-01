@@ -54,12 +54,14 @@
 All verifications run against live stack: Docker (PostgreSQL + Redis + MinIO), NestJS API, Vite web, seeded DB.
 
 ### Pre-flight: PASS
+
 ```
 pnpm seed:db -- --reset              → Seed complete, canonical fixture baseline ready
 pnpm harness:phase22a               → 18/18 PASS
 ```
 
 ### Phase 22B API Harness: PASS 8/8
+
 ```
 npx tsx scripts/harness/phase22b-production-path-api-check.ts --strict
   PASS  /api/health                                         → ok=true, service=visionflow-api
@@ -73,6 +75,7 @@ npx tsx scripts/harness/phase22b-production-path-api-check.ts --strict
 ```
 
 ### Phase 22B Meta Harness: PASS 13/13
+
 ```
 npx tsx scripts/harness/phase22b-meta-harness.ts --strict --with-api
   PASS  phase22a-meta-harness: 5/5 sub-harnesses
@@ -85,6 +88,7 @@ npx tsx scripts/harness/phase22b-meta-harness.ts --strict --with-api
 ```
 
 ### Playwright Smoke: PASS 11/11
+
 ```
 npx playwright test apps/web/e2e/production-path.spec.ts
   PASS  loads app with no console errors on initial load
@@ -104,13 +108,13 @@ npx playwright test apps/web/e2e/production-path.spec.ts
 
 All bugs were in `.env` / configuration, not in Phase 22B code itself:
 
-| # | Bug | Fix |
-|---|-----|-----|
-| 1 | `VITE_API_BASE_URL=http://localhost:3000` missing `/api` suffix → harness called `http://localhost:3000/health` (404) | Fixed to `http://localhost:3000/api` |
-| 2 | `AbortSignal.timeout(10000)` caused Node fetch to hang indefinitely in PowerShell/tsx environment | Replaced with `setTimeout`-based `AbortController` in both harness scripts |
-| 3 | `WEB_ORIGIN=http://localhost:5173` did not cover ports 5174/5175 (Vite auto-assignment) | Extended to `http://localhost:5173,5174,5175` |
-| 4 | `annotations.ts` default `VITE_API_BASE_URL` was `http://127.0.0.1:3000` → CORS mismatch with `localhost` origin in browser | Fixed default to `http://localhost:3000` |
-| 5 | `playwright.config.ts` used `VITE_API_BASE_URL` for `baseURL` → `goto('/')` navigated to `http://localhost:3000/api/` instead of web URL | Fixed to `VITE_WEB_BASE_URL` with default `http://localhost:5173` |
+| #   | Bug                                                                                                                                      | Fix                                                                        |
+| --- | ---------------------------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------- |
+| 1   | `VITE_API_BASE_URL=http://localhost:3000` missing `/api` suffix → harness called `http://localhost:3000/health` (404)                    | Fixed to `http://localhost:3000/api`                                       |
+| 2   | `AbortSignal.timeout(10000)` caused Node fetch to hang indefinitely in PowerShell/tsx environment                                        | Replaced with `setTimeout`-based `AbortController` in both harness scripts |
+| 3   | `WEB_ORIGIN=http://localhost:5173` did not cover ports 5174/5175 (Vite auto-assignment)                                                  | Extended to `http://localhost:5173,5174,5175`                              |
+| 4   | `annotations.ts` default `VITE_API_BASE_URL` was `http://127.0.0.1:3000` → CORS mismatch with `localhost` origin in browser              | Fixed default to `http://localhost:3000`                                   |
+| 5   | `playwright.config.ts` used `VITE_API_BASE_URL` for `baseURL` → `goto('/')` navigated to `http://localhost:3000/api/` instead of web URL | Fixed to `VITE_WEB_BASE_URL` with default `http://localhost:5173`          |
 
 ## Recommendations for Phase 23
 

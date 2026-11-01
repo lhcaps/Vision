@@ -9,6 +9,7 @@
 ## Scope of Review
 
 Files changed during Phase 23:
+
 - `apps/web/e2e/full-vertical-slice.spec.ts` (new)
 - `scripts/harness/phase23-full-e2e-check.ts` (new)
 - `docs/demo/DEMO-CHECKLIST.md` (new)
@@ -61,6 +62,7 @@ Files changed during Phase 23:
 **Finding (original):** Tests used `lockedVisible` and `succeededVisible` as variables but never asserted them, meaning tests could pass without the canonical LOCKED/SUCCEEDED text being visible.
 
 **Fix applied in patch:** Replaced unused variables with direct `expect().toBeVisible()` assertions:
+
 - `await expect(page.getByText('LOCKED', { exact: false }).first()).toBeVisible()`
 - `await expect(page.getByText('SUCCEEDED', { exact: false }).first()).toBeVisible()`
 - Added assertions for evaluation metric labels: Precision, Recall, F1, Mean IoU, TP, Prediction overlay
@@ -94,6 +96,7 @@ None. No security-sensitive changes in this phase.
 ## Regression Assessment
 
 **No regression introduced.** The phase:
+
 - Does not modify any business logic
 - Does not change any API routes
 - Does not alter any database schema

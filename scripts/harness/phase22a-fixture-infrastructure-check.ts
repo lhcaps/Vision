@@ -81,12 +81,8 @@ async function main() {
 
   if (!process.env.DATABASE_URL) {
     if (strict) {
-      logFail(
-        'DATABASE_URL not configured — STRICT mode requires database connection.',
-      );
-      logFail(
-        'Fix: set DATABASE_URL in .env or export DATABASE_URL=<connection_string>',
-      );
+      logFail('DATABASE_URL not configured — STRICT mode requires database connection.');
+      logFail('Fix: set DATABASE_URL in .env or export DATABASE_URL=<connection_string>');
       process.exit(1);
     }
     logSkip('DATABASE_URL not configured — DB checks skipped.');
@@ -108,7 +104,7 @@ async function main() {
     {
       const rows = (await prisma.$queryRawUnsafe(
         'SELECT id, name FROM "Project" WHERE id = $1',
-        F.project.id,
+        F.project.id
       )) as Array<{ id: string; name: string }>;
 
       const passed = rows.length === 1 && rows[0].id === F.project.id;
@@ -125,7 +121,7 @@ async function main() {
     {
       const rows = (await prisma.$queryRawUnsafe(
         'SELECT id FROM "Dataset" WHERE id = $1',
-        F.dataset.id,
+        F.dataset.id
       )) as Array<{ id: string }>;
 
       const passed = rows.length === 1;
@@ -142,7 +138,7 @@ async function main() {
     {
       const rows = (await prisma.$queryRawUnsafe(
         'SELECT id, status FROM "DatasetVersion" WHERE id = $1',
-        F.datasetVersion.id,
+        F.datasetVersion.id
       )) as Array<{ id: string; status: string }>;
 
       const passed = rows.length === 1 && String(rows[0].status) === 'LOCKED';
@@ -155,8 +151,7 @@ async function main() {
             ? 'NOT FOUND'
             : `status=${rows[0].status} (expected LOCKED)`,
       });
-      if (passed)
-        logPass(`Dataset version ${F.datasetVersion.id} is LOCKED`);
+      if (passed) logPass(`Dataset version ${F.datasetVersion.id} is LOCKED`);
       else logFail(`Dataset version status: ${rows[0]?.status ?? 'NOT FOUND'}`);
     }
 
@@ -164,7 +159,7 @@ async function main() {
     {
       const rows = (await prisma.$queryRawUnsafe(
         'SELECT COUNT(*)::int AS cnt FROM "DatasetVersionAsset" WHERE "datasetVersionId" = $1',
-        F.datasetVersion.id,
+        F.datasetVersion.id
       )) as Array<{ cnt: number }>;
 
       const passed = rows.length === 1 && rows[0].cnt >= 3;
@@ -181,7 +176,7 @@ async function main() {
     {
       const rows = (await prisma.$queryRawUnsafe(
         'SELECT id, width, height FROM "MediaAsset" WHERE id = $1',
-        F.annotationWorkspace.assetId,
+        F.annotationWorkspace.assetId
       )) as Array<{ id: string; width: number; height: number }>;
 
       const passed = rows.length === 1;
@@ -192,8 +187,7 @@ async function main() {
           ? `${rows[0].width}x${rows[0].height}`
           : `${F.annotationWorkspace.assetId} NOT FOUND`,
       });
-      if (passed)
-        logPass(`Annotation workspace asset ${F.annotationWorkspace.assetId} exists`);
+      if (passed) logPass(`Annotation workspace asset ${F.annotationWorkspace.assetId} exists`);
       else logFail(`Asset ${F.annotationWorkspace.assetId} NOT FOUND`);
     }
 
@@ -201,7 +195,7 @@ async function main() {
     {
       const rows = (await prisma.$queryRawUnsafe(
         'SELECT id FROM "AnnotationSet" WHERE id = $1',
-        F.annotationWorkspace.annotationSetId,
+        F.annotationWorkspace.annotationSetId
       )) as Array<{ id: string }>;
 
       const passed = rows.length === 1;
@@ -220,7 +214,7 @@ async function main() {
         'SELECT id, "labelClassId", source FROM "Annotation" WHERE "annotationSetId" = $1 AND "assetId" = $2 AND source::text = $3',
         F.annotationWorkspace.annotationSetId,
         F.annotationWorkspace.assetId,
-        'MANUAL',
+        'MANUAL'
       )) as Array<{ id: string; labelClassId: string; source: string }>;
 
       const passed = rows.length >= 1;
@@ -238,7 +232,7 @@ async function main() {
     {
       const rows = (await prisma.$queryRawUnsafe(
         'SELECT id, name, "definitionJson" FROM "Pipeline" WHERE id = $1',
-        F.pipeline.id,
+        F.pipeline.id
       )) as Array<{
         id: string;
         name: string;
@@ -259,7 +253,7 @@ async function main() {
     {
       const rows = (await prisma.$queryRawUnsafe(
         'SELECT "definitionJson" FROM "Pipeline" WHERE id = $1',
-        F.pipeline.id,
+        F.pipeline.id
       )) as Array<{ definitionJson: Record<string, unknown> }>;
 
       let passed = false;
@@ -289,7 +283,7 @@ async function main() {
     {
       const rows = (await prisma.$queryRawUnsafe(
         'SELECT id, name, runtime, "configJson" FROM "ModelArtifact" WHERE id = $1',
-        F.modelArtifact.id,
+        F.modelArtifact.id
       )) as Array<{
         id: string;
         name: string;
@@ -315,7 +309,7 @@ async function main() {
       const rows = (await prisma.$queryRawUnsafe(
         'SELECT id, status FROM "InferenceJob" WHERE id = $1 AND status::text = $2',
         F.inferenceJob.id,
-        'SUCCEEDED',
+        'SUCCEEDED'
       )) as Array<{ id: string; status: string }>;
 
       const passed = rows.length === 1;
@@ -332,7 +326,7 @@ async function main() {
     {
       const rows = (await prisma.$queryRawUnsafe(
         'SELECT COUNT(*)::int AS cnt FROM "Prediction" WHERE "inferenceJobId" = $1',
-        F.inferenceJob.id,
+        F.inferenceJob.id
       )) as Array<{ cnt: number }>;
 
       const passed = rows.length === 1 && rows[0].cnt >= 3;
@@ -341,8 +335,7 @@ async function main() {
         passed,
         details: passed ? `${rows[0].cnt} predictions` : `${rows[0]?.cnt ?? 0} predictions`,
       });
-      if (passed)
-        logPass(`${rows[0].cnt} predictions exist for ${F.inferenceJob.id}`);
+      if (passed) logPass(`${rows[0].cnt} predictions exist for ${F.inferenceJob.id}`);
       else logFail(`${rows[0]?.cnt ?? 0} predictions (expected >= 3)`);
     }
 
@@ -354,7 +347,7 @@ async function main() {
          FROM "EvaluationReport"
          WHERE "inferenceJobId" = $1
          ORDER BY "createdAt" DESC LIMIT 1`,
-        F.inferenceJob.id,
+        F.inferenceJob.id
       )) as Array<{
         id: string;
         datasetVersionId: string;
@@ -387,19 +380,21 @@ async function main() {
       const rows = (await prisma.$queryRawUnsafe(
         `SELECT id, status FROM "InferenceJob"
          WHERE "projectId" = $1 AND status::text IN ('QUEUED','RUNNING')`,
-        F.project.id,
+        F.project.id
       )) as Array<{ id: string; status: string }>;
 
       const passed = rows.length === 0;
       results.push({
         name: 'No stale QUEUED/RUNNING jobs for demo project',
         passed,
-        details: passed ? 'none found' : `${rows.length} stale: ${rows.map((j) => j.id).join(', ')}`,
+        details: passed
+          ? 'none found'
+          : `${rows.length} stale: ${rows.map((j) => j.id).join(', ')}`,
       });
       if (passed) logPass('No stale QUEUED/RUNNING jobs');
       else
         logFail(
-          `${rows.length} stale job(s): ${rows.map((j) => `${j.id}(${j.status})`).join(', ')}`,
+          `${rows.length} stale job(s): ${rows.map((j) => `${j.id}(${j.status})`).join(', ')}`
         );
     }
 
@@ -411,7 +406,7 @@ async function main() {
          FROM "EvaluationReport"
          WHERE "inferenceJobId" = $1
          ORDER BY "createdAt" DESC LIMIT 1`,
-        F.inferenceJob.id,
+        F.inferenceJob.id
       )) as Array<{
         inputHash: string;
         metricsHash: string;
@@ -458,7 +453,7 @@ async function main() {
          "algorithmVersion", "iouThreshold", "inputHash", "metricsHash"
          FROM "EvaluationReport"
          WHERE "inferenceJobId" = $1 LIMIT 1`,
-        F.inferenceJob.id,
+        F.inferenceJob.id
       )) as Array<{
         datasetVersionId: string | null;
         pipelineId: string | null;
@@ -481,8 +476,7 @@ async function main() {
         passed,
         details: passed ? 'all required columns non-null' : 'some integrity columns are null',
       });
-      if (passed)
-        logPass('Phase 20D equivalence: all integrity columns non-null');
+      if (passed) logPass('Phase 20D equivalence: all integrity columns non-null');
       else logFail('Phase 20D equivalence: some integrity columns are NULL');
     }
 
@@ -494,7 +488,7 @@ async function main() {
          AND column_name IN (
            'datasetVersionId', 'pipelineId', 'modelId',
            'algorithmVersion', 'iouThreshold', 'inputHash', 'metricsHash'
-         )`,
+         )`
       )) as Array<{ column_name: string }>;
 
       const requiredCols = [
@@ -514,8 +508,7 @@ async function main() {
         passed,
         details: passed ? requiredCols.join(', ') : `missing: ${missing.join(', ')}`,
       });
-      if (passed)
-        logPass('Phase 20E equivalence: all 7 migration columns present');
+      if (passed) logPass('Phase 20E equivalence: all 7 migration columns present');
       else logFail(`Phase 20E equivalence: missing columns: ${missing.join(', ')}`);
     }
 
@@ -524,7 +517,7 @@ async function main() {
       const rows = (await prisma.$queryRawUnsafe(
         `SELECT migration_name, finished_at, rolled_back_at
          FROM _prisma_migrations
-         WHERE finished_at IS NULL AND rolled_back_at IS NULL`,
+         WHERE finished_at IS NULL AND rolled_back_at IS NULL`
       )) as Array<{
         migration_name: string;
         finished_at: string | null;
@@ -540,10 +533,7 @@ async function main() {
           : `${rows.length} unsettled: ${rows.map((m) => m.migration_name).join(', ')}`,
       });
       if (passed) logPass('Phase 20F equivalence: no stale migrations');
-      else
-        logFail(
-          `Phase 20F equivalence: ${rows.length} unsettled migration(s)`,
-        );
+      else logFail(`Phase 20F equivalence: ${rows.length} unsettled migration(s)`);
     }
 
     printResults(prisma, results);

@@ -8,6 +8,7 @@
 ## Scope
 
 Phase 21A establishes the app composition boundary by:
+
 1. Extracting route rendering to `AppRoutes.tsx`
 2. Extracting panel components to `app/` directory
 3. Removing all route/panel JSX blocks from `App.tsx`
@@ -27,22 +28,22 @@ Phase 21A establishes the app composition boundary by:
 
 ## Deliverables
 
-| Deliverable | Status |
-|---|---|
-| `AppRoutes.tsx` extracted | Done (commit 86416bf) |
-| `OverviewPanel.tsx` extracted | Done (commit 86416bf) |
-| `MediaPanel.tsx` extracted | Done (commit 86416bf) |
-| `DatasetPanel.tsx` extracted | Done (commit 86416bf) |
-| `PipelinePanel.tsx` extracted | Done (commit 86416bf) |
-| `JobsPanel.tsx` extracted | Done (commit 86416bf) |
-| `Panel`/`VisionPreview`/`StateRow` extracted | Done (commit 86416bf) |
+| Deliverable                                              | Status                |
+| -------------------------------------------------------- | --------------------- |
+| `AppRoutes.tsx` extracted                                | Done (commit 86416bf) |
+| `OverviewPanel.tsx` extracted                            | Done (commit 86416bf) |
+| `MediaPanel.tsx` extracted                               | Done (commit 86416bf) |
+| `DatasetPanel.tsx` extracted                             | Done (commit 86416bf) |
+| `PipelinePanel.tsx` extracted                            | Done (commit 86416bf) |
+| `JobsPanel.tsx` extracted                                | Done (commit 86416bf) |
+| `Panel`/`VisionPreview`/`StateRow` extracted             | Done (commit 86416bf) |
 | `NavRail`, `ShellHeader`, `ReadinessStrip`, `StatusPill` | Done (commit 86416bf) |
-| `App.tsx` import cleanup | Done (this pass) |
-| `AppRoutes.tsx` import cleanup | Done (this pass) |
-| Dead `visibleMediaRows` removed from App.tsx | Done (this pass) |
-| Dead `showPipelineExecution` removed from App.tsx | Done (this pass) |
-| Dead `useRef` removed from App.tsx | Done (this pass) |
-| Inline `MediaUploadRow` import fixed in AppRoutes | Done (this pass) |
+| `App.tsx` import cleanup                                 | Done (this pass)      |
+| `AppRoutes.tsx` import cleanup                           | Done (this pass)      |
+| Dead `visibleMediaRows` removed from App.tsx             | Done (this pass)      |
+| Dead `showPipelineExecution` removed from App.tsx        | Done (this pass)      |
+| Dead `useRef` removed from App.tsx                       | Done (this pass)      |
+| Inline `MediaUploadRow` import fixed in AppRoutes        | Done (this pass)      |
 
 ## Acceptance Criteria
 

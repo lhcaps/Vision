@@ -6,4 +6,7 @@ async function reset() {
   console.log('Schema reset complete');
   await prisma.$disconnect();
 }
-reset().catch(e => { console.error(e); process.exit(1); });
+reset().catch((e) => {
+  console.error(e);
+  process.exit(1);
+});

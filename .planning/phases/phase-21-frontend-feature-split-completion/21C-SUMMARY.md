@@ -13,19 +13,20 @@
 
 **Props removed from AppRoutes:**
 
-| Prop(s) | Reason |
-|---|---|
-| `threshold`, `setThreshold` | Feature-local state — owned by `JobsPanel` and `AnnotationEnginePanel` independently |
-| `annotationRows`, `setAnnotationRows`, `selectedAnnotation`, `setSelectedAnnotation` | Feature-local state — owned by `AnnotationEnginePanel` internally |
+| Prop(s)                                                                                                                          | Reason                                                                                          |
+| -------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------- |
+| `threshold`, `setThreshold`                                                                                                      | Feature-local state — owned by `JobsPanel` and `AnnotationEnginePanel` independently            |
+| `annotationRows`, `setAnnotationRows`, `selectedAnnotation`, `setSelectedAnnotation`                                             | Feature-local state — owned by `AnnotationEnginePanel` internally                               |
 | `pipelineSelectedNodeId`, `onSelectNode`, `pipelineDefinition`, `onDefinitionChange`, `pipelineValidation`, `onValidationChange` | Feature-local state — owned by `PipelinePanel` internally (already had optional external props) |
 
-**Props retained (17):** `section`, `job`, `onRun`, `inferenceEligibility`, `evaluationEligibility`, `mediaUploads`, `setMediaUploads`, `selectedMediaAssetId`, `onSelectAsset`, `selectedDatasetVersionId`, `onSelectVersion`, `datasetVersions`, `onVersionsChange`, `datasetSourceState`, `onSourceStateChange`, `evaluationReport`*, `isEvaluating`*, `evaluationError`*, `predictions`*, `onRunEvaluation`*, `setSection`, `runtimeReadiness`
+**Props retained (17):** `section`, `job`, `onRun`, `inferenceEligibility`, `evaluationEligibility`, `mediaUploads`, `setMediaUploads`, `selectedMediaAssetId`, `onSelectAsset`, `selectedDatasetVersionId`, `onSelectVersion`, `datasetVersions`, `onVersionsChange`, `datasetSourceState`, `onSourceStateChange`, `evaluationReport`_, `isEvaluating`_, `evaluationError`_, `predictions`_, `onRunEvaluation`\*, `setSection`, `runtimeReadiness`
 
-*Evaluation props are co-located because JobsPanel needs them and they derive from `useEvaluationController`.
+\*Evaluation props are co-located because JobsPanel needs them and they derive from `useEvaluationController`.
 
 ### 21C.2 — App.tsx Composition Root Cleanup
 
 **Removed from App.tsx:**
+
 - `threshold` / `setThreshold` state (2 state declarations + 2 prop passings)
 - `selectedAnnotation` / `setSelectedAnnotation` state
 - `annotationRows` / `setAnnotationSummaries` state
@@ -48,6 +49,7 @@ Slight increase over 21B (144 → 159) because `MediaUploadRow` type import was 
 **JobsPanel:** Now owns `threshold` state locally (initialized `useState(62)`). No longer receives `threshold` as a prop. Display text in PredictionOverlayCanvas still uses the local `threshold` value.
 
 **AnnotationEnginePanel:** Now owns all annotation state internally:
+
 - `annotations` — initialized from `createSeedAnnotationSummaries()`
 - `selectedAnnotationId` — initialized to `'ann_02'`
 - `threshold` — initialized to `62`
@@ -60,6 +62,7 @@ Slight increase over 21B (144 → 159) because `MediaUploadRow` type import was 
 ### 21C.4 — InspectorRouter Stub State
 
 `InspectorRouter` still requires `annotations`, `selectedAnnotation`, `setSelectedAnnotation`, `threshold`, `setThreshold`, `pipelineSelectedNodeId`, `pipelineDefinition`, `pipelineValidation` for the contextual inspector panels (AnnotationInspector, PipelineInspector). These are provided as stubs:
+
 - `annotations={[]}`
 - `selectedAnnotation=""`
 - `setSelectedAnnotation={() => {}}`
@@ -75,43 +78,43 @@ This is a known limitation — inspector panels cannot interact with annotation/
 
 ## Files Changed
 
-| File | Change |
-|---|---|
-| `apps/web/src/App.tsx` | Removed 4 state groups, reduced AppRoutes call from 21 to 17 props |
-| `apps/web/src/app/AppRoutes.tsx` | Interface reduced from 23 to 17 props; removed prop passings to OverviewPanel, AnnotationEnginePanel, PipelinePanel |
-| `apps/web/src/app/ShellHeader.tsx` | Removed `threshold` prop and header display |
-| `apps/web/src/app/JobsPanel.tsx` | Owns `threshold` locally via `useState(62)` |
-| `apps/web/src/app/OverviewPanel.tsx` | Removed `pipelineValidation` prop; static pipeline status text |
-| `apps/web/src/features/annotations/AnnotationEngine.tsx` | Reduced external props from 7 to 1 (`mediaRows`); owns all annotation/threshold state internally |
+| File                                                     | Change                                                                                                              |
+| -------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------- |
+| `apps/web/src/App.tsx`                                   | Removed 4 state groups, reduced AppRoutes call from 21 to 17 props                                                  |
+| `apps/web/src/app/AppRoutes.tsx`                         | Interface reduced from 23 to 17 props; removed prop passings to OverviewPanel, AnnotationEnginePanel, PipelinePanel |
+| `apps/web/src/app/ShellHeader.tsx`                       | Removed `threshold` prop and header display                                                                         |
+| `apps/web/src/app/JobsPanel.tsx`                         | Owns `threshold` locally via `useState(62)`                                                                         |
+| `apps/web/src/app/OverviewPanel.tsx`                     | Removed `pipelineValidation` prop; static pipeline status text                                                      |
+| `apps/web/src/features/annotations/AnnotationEngine.tsx` | Reduced external props from 7 to 1 (`mediaRows`); owns all annotation/threshold state internally                    |
 
 ---
 
 ## Runtime Truth Regression Checklist
 
-| Check | Result |
-|---|---|
-| `useRuntimeStatus` called only in `App.tsx` | PASS |
-| `runtimeReadiness` passed as prop from App → AppRoutes → ReadinessStrip | PASS |
-| `runtimeState.health` derives from backend truth | PASS (unchanged from 21B) |
-| `runtime-selectors.test.ts` — all 34 regression tests pass | PASS |
-| `ReadinessStrip` receives readiness as prop, not fetching independently | PASS |
-| No "Mock detector mounted" hard-coded label | PASS (eliminated in 21B) |
-| No fake readiness when endpoint fails | PASS (unchanged from 21B) |
+| Check                                                                   | Result                    |
+| ----------------------------------------------------------------------- | ------------------------- |
+| `useRuntimeStatus` called only in `App.tsx`                             | PASS                      |
+| `runtimeReadiness` passed as prop from App → AppRoutes → ReadinessStrip | PASS                      |
+| `runtimeState.health` derives from backend truth                        | PASS (unchanged from 21B) |
+| `runtime-selectors.test.ts` — all 34 regression tests pass              | PASS                      |
+| `ReadinessStrip` receives readiness as prop, not fetching independently | PASS                      |
+| No "Mock detector mounted" hard-coded label                             | PASS (eliminated in 21B)  |
+| No fake readiness when endpoint fails                                   | PASS (unchanged from 21B) |
 
 ---
 
 ## Verification Results
 
-| Check | Result |
-|---|---|
-| `pnpm --filter @visionflow/web typecheck` | PASS |
-| `pnpm --filter @visionflow/web test` | PASS — 65 tests (4 files) |
-| `pnpm --filter @visionflow/web lint` | PASS |
-| `pnpm --filter @visionflow/web build` | PASS — production build successful |
-| `pnpm typecheck` (root) | PASS — all 6 packages |
-| Runtime truth grep — `useRuntimeStatus` only in App.tsx | PASS |
-| Runtime truth grep — `runtimeReadiness` flow confirmed | PASS |
-| runtime-selectors regression tests | PASS — 34/34 |
+| Check                                                   | Result                             |
+| ------------------------------------------------------- | ---------------------------------- |
+| `pnpm --filter @visionflow/web typecheck`               | PASS                               |
+| `pnpm --filter @visionflow/web test`                    | PASS — 65 tests (4 files)          |
+| `pnpm --filter @visionflow/web lint`                    | PASS                               |
+| `pnpm --filter @visionflow/web build`                   | PASS — production build successful |
+| `pnpm typecheck` (root)                                 | PASS — all 6 packages              |
+| Runtime truth grep — `useRuntimeStatus` only in App.tsx | PASS                               |
+| Runtime truth grep — `runtimeReadiness` flow confirmed  | PASS                               |
+| runtime-selectors regression tests                      | PASS — 34/34                       |
 
 ---
 

@@ -14,6 +14,7 @@
 Removed 8 fake/stub props from `InspectorRouter` and replaced their rendering with honest embedded-notice panels.
 
 **Props removed:**
+
 - `annotations: AnnotationSummary[]` (was `[]`)
 - `selectedAnnotation: string` (was `""`)
 - `setSelectedAnnotation: (id: string) => void` (was `() => {}`)
@@ -24,6 +25,7 @@ Removed 8 fake/stub props from `InspectorRouter` and replaced their rendering wi
 - `pipelineValidation: PipelineValidationResult` (was `validatePipelineDefinition(demoSnapshot.pipeline)`)
 
 **New `InspectorRouterProps`:**
+
 ```typescript
 type InspectorRouterProps = {
   active: SectionId;
@@ -38,6 +40,7 @@ type InspectorRouterProps = {
 ### 21D.2 — Honest Embedded-Notice Rendering
 
 For `active === 'annotate'`:
+
 ```tsx
 <InspectorShell title="Inspector" section="annotate">
   <ActionHint
@@ -49,6 +52,7 @@ For `active === 'annotate'`:
 ```
 
 For `active === 'pipeline'`:
+
 ```tsx
 <InspectorShell title="Inspector" section="pipeline">
   <ActionHint
@@ -62,6 +66,7 @@ For `active === 'pipeline'`:
 ### 21D.3 — AppRoutes.tsx Import Cleanup
 
 **Imports removed:**
+
 - `validatePipelineDefinition` from `@visionflow/contracts`
 - `PipelineValidationResult` from `@visionflow/contracts`
 - `AnnotationSummary`, `PipelineDefinition`, `PipelineNode` from `@visionflow/contracts` (no longer needed after prop removal)
@@ -80,6 +85,7 @@ For `active === 'pipeline'`:
 **Chosen: Option A1** — Honest embedded-notice panels for annotate/pipeline sections.
 
 Not Option B because:
+
 - `PipelinePanel` already renders `PipelineInspector` internally at its right column (`grid-cols-[minmax(0,1.35fr)_320px]`)
 - `AnnotationEnginePanel` already owns annotation state internally and renders its own annotation inspector
 - Option B would require creating feature route container files and lifting state, undoing the prop-surface gains from Phase 21C
@@ -89,54 +95,54 @@ Not Option B because:
 
 ## Files Changed
 
-| File | Change |
-|---|---|
+| File                                                  | Change                                                                                                                                                 |
+| ----------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------ |
 | `apps/web/src/features/inspector/InspectorRouter.tsx` | Props reduced from 13 to 6. Honest embedded-notice for annotate/pipeline. Real inspector for media/datasets/jobs. Fallback for overview/timeline/diff. |
-| `apps/web/src/app/AppRoutes.tsx` | 8 fake props removed from InspectorRouter. Unused imports removed. |
-| `apps/web/src/features/inspector/index.ts` | Removed AnnotationInspectorData and PipelineInspectorData from barrel export |
-| `apps/web/src/features/inspector/inspector.types.ts` | Removed AnnotationInspectorData, PipelineInspectorData, SectionId, unused AnnotationSummary import |
+| `apps/web/src/app/AppRoutes.tsx`                      | 8 fake props removed from InspectorRouter. Unused imports removed.                                                                                     |
+| `apps/web/src/features/inspector/index.ts`            | Removed AnnotationInspectorData and PipelineInspectorData from barrel export                                                                           |
+| `apps/web/src/features/inspector/inspector.types.ts`  | Removed AnnotationInspectorData, PipelineInspectorData, SectionId, unused AnnotationSummary import                                                     |
 
 ---
 
 ## Verification Results
 
-| Check | Result |
-|---|---|
-| `pnpm --filter @visionflow/web typecheck` | **PASS** |
-| `pnpm --filter @visionflow/web test` | **PASS** — 65 tests (4 files) |
-| `pnpm --filter @visionflow/web lint` | **PASS** |
-| `pnpm --filter @visionflow/web build` | **PASS** — production build successful |
-| `grep "annotations={}" apps/web/src/` | 0 results |
-| `grep "setSelectedAnnotation=()" apps/web/src/` | 0 results |
-| `grep "setThreshold=()" apps/web/src/` | 0 results |
-| `grep "pipelineDefinition={demoSnapshot" apps/web/src/` | 0 results |
-| `grep "pipelineValidation={validatePipelineDefinition" apps/web/src/` | 0 results |
+| Check                                                                 | Result                                 |
+| --------------------------------------------------------------------- | -------------------------------------- |
+| `pnpm --filter @visionflow/web typecheck`                             | **PASS**                               |
+| `pnpm --filter @visionflow/web test`                                  | **PASS** — 65 tests (4 files)          |
+| `pnpm --filter @visionflow/web lint`                                  | **PASS**                               |
+| `pnpm --filter @visionflow/web build`                                 | **PASS** — production build successful |
+| `grep "annotations={}" apps/web/src/`                                 | 0 results                              |
+| `grep "setSelectedAnnotation=()" apps/web/src/`                       | 0 results                              |
+| `grep "setThreshold=()" apps/web/src/`                                | 0 results                              |
+| `grep "pipelineDefinition={demoSnapshot" apps/web/src/`               | 0 results                              |
+| `grep "pipelineValidation={validatePipelineDefinition" apps/web/src/` | 0 results                              |
 
 ---
 
 ## Runtime Truth Regression Checklist
 
-| Check | Result |
-|---|---|
-| `useRuntimeStatus` called only in `App.tsx` | **PASS** |
-| `runtimeReadiness` passed as prop from App → AppRoutes → ReadinessStrip | **PASS** |
-| `runtimeState.health` derives from backend truth | **PASS** (unchanged from 21B) |
-| `runtime-selectors.test.ts` — all 34 regression tests pass | **PASS** |
-| `ReadinessStrip` receives readiness as prop, not fetching independently | **PASS** |
-| No "Mock detector mounted" hard-coded label | **PASS** (eliminated in 21B) |
-| No fake readiness when endpoint fails | **PASS** (unchanged from 21B) |
+| Check                                                                   | Result                        |
+| ----------------------------------------------------------------------- | ----------------------------- |
+| `useRuntimeStatus` called only in `App.tsx`                             | **PASS**                      |
+| `runtimeReadiness` passed as prop from App → AppRoutes → ReadinessStrip | **PASS**                      |
+| `runtimeState.health` derives from backend truth                        | **PASS** (unchanged from 21B) |
+| `runtime-selectors.test.ts` — all 34 regression tests pass              | **PASS**                      |
+| `ReadinessStrip` receives readiness as prop, not fetching independently | **PASS**                      |
+| No "Mock detector mounted" hard-coded label                             | **PASS** (eliminated in 21B)  |
+| No fake readiness when endpoint fails                                   | **PASS** (unchanged from 21B) |
 
 ---
 
 ## Phase 21C Preservation Checklist
 
-| Check | Result |
-|---|---|
-| `JobsPanel` uses `seededGroundTruth` via `useMemo` | **PASS** |
-| `TimelineReplayPanel` uses `seededGroundTruth` via `useMemo` | **PASS** |
-| `OverviewPanel` shows neutral pipeline text | **PASS** — "Open Pipeline to inspect graph validation" |
-| `AppRoutes` prop surface does not balloon | **PASS** — no new props added |
-| Phase 21B runtime truth invariants preserved | **PASS** |
+| Check                                                        | Result                                                 |
+| ------------------------------------------------------------ | ------------------------------------------------------ |
+| `JobsPanel` uses `seededGroundTruth` via `useMemo`           | **PASS**                                               |
+| `TimelineReplayPanel` uses `seededGroundTruth` via `useMemo` | **PASS**                                               |
+| `OverviewPanel` shows neutral pipeline text                  | **PASS** — "Open Pipeline to inspect graph validation" |
+| `AppRoutes` prop surface does not balloon                    | **PASS** — no new props added                          |
+| Phase 21B runtime truth invariants preserved                 | **PASS**                                               |
 
 ---
 
@@ -147,6 +153,7 @@ Not Option B because:
 Ran `pnpm playwright test e2e/navigation.spec.ts --project=chromium` against `http://localhost:5173`.
 
 All 10 checks passed:
+
 - 8 nav sections navigate without errors (Command, Media, Versions, Annotate, Pipeline, Jobs, Replay, Diff)
 - No console errors on initial load
 - All 8 nav buttons are visible

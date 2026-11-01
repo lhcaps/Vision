@@ -30,16 +30,12 @@ export function useDatasetsController(): UseDatasetsControllerResult {
         if (cancelled) return;
 
         const versionResponses = await Promise.all(
-          datasetsResponse.datasets.map((ds) =>
-            listDatasetVersions(DEMO_PROJECT_ID, ds.id)
-          )
+          datasetsResponse.datasets.map((ds) => listDatasetVersions(DEMO_PROJECT_ID, ds.id))
         );
 
         if (cancelled) return;
 
-        const allVersions: DatasetVersionSummary[] = versionResponses.flatMap(
-          (vr) => vr.versions
-        );
+        const allVersions: DatasetVersionSummary[] = versionResponses.flatMap((vr) => vr.versions);
 
         setDatasetVersions(allVersions);
 

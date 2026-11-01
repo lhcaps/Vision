@@ -20,9 +20,7 @@ import { motionTokens } from '@visionflow/motion';
 import { demoSnapshot } from '../data/demo';
 import { EvaluationMetricsPanel, PredictionOverlayCanvas } from '../features/evaluation';
 import type { JobSourceState, JobUiState } from '../features/inference';
-import {
-  PipelineExecutionFlow,
-} from '../features/timeline';
+import { PipelineExecutionFlow } from '../features/timeline';
 import { ActionHint } from '../shared/ui/ActionHint';
 import { FailedJobErrorState } from '../shared/ui/ErrorState';
 import { StatusPill } from './StatusPill';
@@ -203,7 +201,6 @@ function JobSourcePill({ source }: { source: JobSourceState }) {
   const tone = source === 'api' ? 'pill-signal' : source === 'loading' ? 'pill-scan' : 'pill-amber';
 
   return <span className={`pill-base ${tone}`}>{source}</span>;
-
 }
 
 function JobStageStep({

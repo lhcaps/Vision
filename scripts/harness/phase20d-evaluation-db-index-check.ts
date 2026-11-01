@@ -265,11 +265,32 @@ async function main() {
     // ── Check 9: Latest report passes EvaluationReportSchema strict-parse ───────
     {
       // Inline schema-equivalent check (no @visionflow/contracts dependency).
-      const requiredFields = ['id', 'jobId', 'datasetVersionId', 'algorithmVersion', 'iouThreshold', 'inputHash', 'metricsHash', 'precision', 'recall', 'f1', 'meanIoU', 'truePositives', 'falsePositives', 'falseNegatives', 'predictionCount', 'groundTruthCount', 'assetCount', 'evaluatedAt'];
+      const requiredFields = [
+        'id',
+        'jobId',
+        'datasetVersionId',
+        'algorithmVersion',
+        'iouThreshold',
+        'inputHash',
+        'metricsHash',
+        'precision',
+        'recall',
+        'f1',
+        'meanIoU',
+        'truePositives',
+        'falsePositives',
+        'falseNegatives',
+        'predictionCount',
+        'groundTruthCount',
+        'assetCount',
+        'evaluatedAt',
+      ];
       const missing = requiredFields.filter((f) => !(f in metrics) || metrics[f] === null);
       const hashRegex = /^[a-f0-9]{16}$/;
-      const inputHashOk = typeof metrics.inputHash === 'string' && hashRegex.test(metrics.inputHash as string);
-      const metricsHashOk = typeof metrics.metricsHash === 'string' && hashRegex.test(metrics.metricsHash as string);
+      const inputHashOk =
+        typeof metrics.inputHash === 'string' && hashRegex.test(metrics.inputHash as string);
+      const metricsHashOk =
+        typeof metrics.metricsHash === 'string' && hashRegex.test(metrics.metricsHash as string);
 
       const passed = missing.length === 0 && inputHashOk && metricsHashOk;
       results.push({

@@ -116,7 +116,7 @@ jobs:
       - run: pnpm db:generate
         env:
           DATABASE_URL: postgresql://test:test@localhost:5432/test
-      - run: pnpm db:push
+      - run: pnpm db:migrate:deploy
         env:
           DATABASE_URL: postgresql://test:test@localhost:5432/test
       - run: pnpm test
@@ -162,7 +162,7 @@ jobs:
       - run: pnpm db:generate
         env:
           DATABASE_URL: postgresql://test:test@localhost:5432/test
-      - run: pnpm db:push
+      - run: pnpm db:migrate:deploy
         env:
           DATABASE_URL: postgresql://test:test@localhost:5432/test
       - run: pnpm build

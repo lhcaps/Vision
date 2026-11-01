@@ -457,15 +457,12 @@ def test_resolve_model_path_relative():
 
     # Relative path should resolve to project root
     result = _resolve_model_path("./models/yolov8n.onnx")
-    assert result.is_absolute()
-    assert "Vision" in str(result)
-    assert "yolov8n.onnx" in result.name
+    assert result == Path(__file__).resolve().parents[3] / "models" / "yolov8n.onnx"
 
 
-def test_resolve_model_path_absolute():
+def test_resolve_model_path_absolute(tmp_path):
     from main import _resolve_model_path
 
-    # On Windows, only drive-letter paths (D:\...) are absolute.
-    # Unix-style /tmp/... is treated as relative and resolved against PROJECT_ROOT.
-    result = _resolve_model_path("D:/tmp/custom/path.onnx")
-    assert str(result) == "D:\\tmp\\custom\\path.onnx"
+    model_path = tmp_path / "custom" / "path.onnx"
+    assert model_path.is_absolute()
+    assert _resolve_model_path(str(model_path)) == model_path

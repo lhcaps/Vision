@@ -5,8 +5,4 @@ export { PipelineInspector } from './PipelineInspector';
 export { JobInspector } from './JobInspector';
 export { InspectorRouter } from './InspectorRouter';
 export type { InspectorRouterProps } from './InspectorRouter';
-export type {
-  MediaInspectorData,
-  DatasetInspectorData,
-  JobInspectorData,
-} from './inspector.types';
+export type { MediaInspectorData, DatasetInspectorData, JobInspectorData } from './inspector.types';

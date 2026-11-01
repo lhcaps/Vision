@@ -42,7 +42,14 @@ function ApiStatusBadge({ readiness }: { readiness: RuntimeReadiness }) {
   const { api } = readiness;
 
   if (api.kind === 'loading') {
-    return <StatusBadge label="API" value="Loading..." icon={CircleNotch} tone="text-neutral-400 animate-spin" />;
+    return (
+      <StatusBadge
+        label="API"
+        value="Loading..."
+        icon={CircleNotch}
+        tone="text-neutral-400 animate-spin"
+      />
+    );
   }
   if (api.kind === 'connected') {
     const modeLabel = api.mode === 'database' ? 'Database ready' : 'In-memory';
@@ -55,10 +62,19 @@ function DatabaseStatusBadge({ readiness }: { readiness: RuntimeReadiness }) {
   const { database } = readiness;
 
   if (database.kind === 'loading') {
-    return <StatusBadge label="Schema" value="Loading..." icon={CircleNotch} tone="text-neutral-400 animate-spin" />;
+    return (
+      <StatusBadge
+        label="Schema"
+        value="Loading..."
+        icon={CircleNotch}
+        tone="text-neutral-400 animate-spin"
+      />
+    );
   }
   if (database.kind === 'ready') {
-    return <StatusBadge label="Schema" value="Database ready" icon={Database} tone="text-scan-300" />;
+    return (
+      <StatusBadge label="Schema" value="Database ready" icon={Database} tone="text-scan-300" />
+    );
   }
   if (database.kind === 'unavailable') {
     return <StatusBadge label="Schema" value="Unavailable" icon={XCircle} tone="text-danger-400" />;
@@ -76,7 +92,14 @@ function QueueStatusBadge({
   const { queue } = readiness;
 
   if (queue.kind === 'loading') {
-    return <StatusBadge label="Queue" value="Loading..." icon={CircleNotch} tone="text-neutral-400 animate-spin" />;
+    return (
+      <StatusBadge
+        label="Queue"
+        value="Loading..."
+        icon={CircleNotch}
+        tone="text-neutral-400 animate-spin"
+      />
+    );
   }
   if (queue.kind === 'bullmq-ready') {
     if (job?.source === 'api' && job?.status === 'RUNNING') {
@@ -97,19 +120,44 @@ function CvStatusBadge({ readiness }: { readiness: RuntimeReadiness }) {
   const { cvWorker } = readiness;
 
   if (cvWorker.kind === 'loading') {
-    return <StatusBadge label="CV" value="Loading..." icon={CircleNotch} tone="text-neutral-400 animate-spin" />;
+    return (
+      <StatusBadge
+        label="CV"
+        value="Loading..."
+        icon={CircleNotch}
+        tone="text-neutral-400 animate-spin"
+      />
+    );
   }
   if (cvWorker.kind === 'onnx-ready') {
-    return <StatusBadge label="CV" value="ONNX detector ready" icon={CheckCircle} tone="text-signal-300" />;
+    return (
+      <StatusBadge
+        label="CV"
+        value="ONNX detector ready"
+        icon={CheckCircle}
+        tone="text-signal-300"
+      />
+    );
   }
   if (cvWorker.kind === 'onnx-configured-unavailable') {
-    return <StatusBadge label="CV" value="ONNX configured, unavailable" icon={Warning} tone="text-amber-400" />;
+    return (
+      <StatusBadge
+        label="CV"
+        value="ONNX configured, unavailable"
+        icon={Warning}
+        tone="text-amber-400"
+      />
+    );
   }
   if (cvWorker.kind === 'mock-fallback') {
-    return <StatusBadge label="CV" value="Mock detector fallback" icon={Stack} tone="text-neutral-400" />;
+    return (
+      <StatusBadge label="CV" value="Mock detector fallback" icon={Stack} tone="text-neutral-400" />
+    );
   }
   if (cvWorker.kind === 'worker-unavailable') {
-    return <StatusBadge label="CV" value="Worker unavailable" icon={XCircle} tone="text-danger-400" />;
+    return (
+      <StatusBadge label="CV" value="Worker unavailable" icon={XCircle} tone="text-danger-400" />
+    );
   }
   return <StatusBadge label="CV" value="Unknown" icon={Warning} tone="text-neutral-400" />;
 }

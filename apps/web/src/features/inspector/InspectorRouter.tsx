@@ -1,10 +1,5 @@
 import type { InferenceJobSummary, PredictionSummary } from '@visionflow/contracts';
-import {
-  DatasetInspector,
-  InspectorShell,
-  JobInspector,
-  MediaInspector,
-} from './index';
+import { DatasetInspector, InspectorShell, JobInspector, MediaInspector } from './index';
 import { ActionHint } from '../../shared/ui/ActionHint';
 import type { MediaInspectorData } from './inspector.types';
 

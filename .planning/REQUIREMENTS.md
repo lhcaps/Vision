@@ -203,26 +203,26 @@ The following are explicitly out of scope for v1.1:
 
 ## Traceability
 
-| REQ-ID                    | Phase      | Status   |
-| ------------------------- | ---------- | -------- |
-| PORT-01 through PORT-06   | 11         | Done     |
-| CI-01 through CI-04       | 12         | Done     |
-| SEC-01 through SEC-11     | 13         | Done     |
-| ABS-01 through ABS-10     | 14A        | Done     |
-| DOM-01 through DOM-07     | 14B        | Done     |
-| OBS-01 through OBS-07     | 15         | Done     |
-| PRE16-01 through PRE16-17 | 15.5-15.10 | Done     |
-| UI-01 through UI-09       | 16A        | Partial  |
-| MED-01 through MED-09     | 17         | Partial  |
-| LOCK-01 through LOCK-09   | 18         | Done     |
-| DET-01 through DET-08     | 19         | Done     |
-| EVAL-01 through EVAL-09   | 20         | Done     |
-| FSC-01                    | 21A        | Partial  |
-| FSC-02 through FSC-05     | 21B        | Pending  |
-| FSC-06                    | 21D        | Pending  |
-| FSC-07                    | 21B        | Pending  |
-| FSC-08 through FSC-10     | 21A        | Done     |
-| TEST-01 through TEST-13   | 22         | Pending  |
-| E2E-01 through E2E-10    | 23         | Pending  |
+| REQ-ID                    | Phase      | Status  |
+| ------------------------- | ---------- | ------- |
+| PORT-01 through PORT-06   | 11         | Done    |
+| CI-01 through CI-04       | 12         | Done    |
+| SEC-01 through SEC-11     | 13         | Done    |
+| ABS-01 through ABS-10     | 14A        | Done    |
+| DOM-01 through DOM-07     | 14B        | Done    |
+| OBS-01 through OBS-07     | 15         | Done    |
+| PRE16-01 through PRE16-17 | 15.5-15.10 | Done    |
+| UI-01 through UI-09       | 16A        | Partial |
+| MED-01 through MED-09     | 17         | Partial |
+| LOCK-01 through LOCK-09   | 18         | Done    |
+| DET-01 through DET-08     | 19         | Done    |
+| EVAL-01 through EVAL-09   | 20         | Done    |
+| FSC-01                    | 21A        | Partial |
+| FSC-02 through FSC-05     | 21B        | Pending |
+| FSC-06                    | 21D        | Pending |
+| FSC-07                    | 21B        | Pending |
+| FSC-08 through FSC-10     | 21A        | Done    |
+| TEST-01 through TEST-13   | 22         | Pending |
+| E2E-01 through E2E-10     | 23         | Pending |
 
 **Total:** 149 requirements | **Done:** 90 | **Partial:** 12 | **Pending:** 47

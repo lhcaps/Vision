@@ -13,6 +13,7 @@ Establish deterministic test fixtures and reusable production-path test infrastr
 Canonical TypeScript module exporting `FIXTURE_IDS` — the single source of truth for all hard-coded IDs used across seed, harnesses, and smoke commands.
 
 Verified IDs:
+
 - `project.id = 'proj_parking_lot'`
 - `dataset.id = 'ds_proj_parking_lot'`
 - `datasetVersion.id = 'dataset_proj_parking_lot_parking_v3'` (LOCKED)
@@ -28,6 +29,7 @@ Verified IDs:
 ### B. Fixture Infrastructure Harness (`scripts/harness/phase22a-fixture-infrastructure-check.ts`)
 
 18-point read-only DB integrity check. Key checks:
+
 1. Project `proj_parking_lot` exists
 2. Dataset exists
 3. Dataset version exists and is LOCKED
@@ -71,6 +73,7 @@ Does NOT run `seed:db -- --reset` — that step is handled externally by CI or d
 ## Out of Scope
 
 **Phase 22A scope was intentionally narrowed** to establish deterministic fixture/harness foundation only. The following items are Phase 22B scope:
+
 - Test fixture factory helpers (`create-test-project.ts`, etc.)
 - Docker test-stack.yml
 - Deterministic binary fixtures (image/video)
@@ -81,14 +84,14 @@ Phase 22A does not implement any of the above.
 
 ## Verification
 
-| Check | Command | Result |
-|-------|---------|--------|
-| typecheck | `pnpm typecheck` | PASS |
-| test | `pnpm test` | PASS |
-| build | `pnpm build` | PASS |
-| lint | `pnpm lint` | PASS |
-| fixture harness | `pnpm harness:phase22a` | PASS (18/18) |
-| meta harness | `pnpm meta:harness:phase22a` | PASS |
+| Check           | Command                      | Result       |
+| --------------- | ---------------------------- | ------------ |
+| typecheck       | `pnpm typecheck`             | PASS         |
+| test            | `pnpm test`                  | PASS         |
+| build           | `pnpm build`                 | PASS         |
+| lint            | `pnpm lint`                  | PASS         |
+| fixture harness | `pnpm harness:phase22a`      | PASS (18/18) |
+| meta harness    | `pnpm meta:harness:phase22a` | PASS         |
 
 ## Depends On
 

@@ -127,7 +127,9 @@ test.describe('Full Vertical Slice — Production Path Proof', () => {
     await expect(panelContent).toBeVisible({ timeout: 5_000 });
 
     // Assert the canonical LOCKED status text is visible — proves Phase 22A fixture surfaced.
-    await expect(page.getByText('LOCKED', { exact: false }).first()).toBeVisible({ timeout: 5_000 });
+    await expect(page.getByText('LOCKED', { exact: false }).first()).toBeVisible({
+      timeout: 5_000,
+    });
 
     expect(errors).toHaveLength(0);
   });
@@ -199,7 +201,9 @@ test.describe('Full Vertical Slice — Production Path Proof', () => {
     await expect(panelContent).toBeVisible({ timeout: 5_000 });
 
     // Assert the canonical SUCCEEDED status text is visible — proves Phase 22A fixture surfaced.
-    await expect(page.getByText('SUCCEEDED', { exact: false }).first()).toBeVisible({ timeout: 5_000 });
+    await expect(page.getByText('SUCCEEDED', { exact: false }).first()).toBeVisible({
+      timeout: 5_000,
+    });
 
     expect(errors).toHaveLength(0);
   });
@@ -228,16 +232,24 @@ test.describe('Full Vertical Slice — Production Path Proof', () => {
 
     // Assert evaluation metric labels are visible — proves EvaluationMetricsPanel rendered.
     // Seeded data has precision=1.0, recall=1.0, f1=1.0, meanIoU=1.0.
-    await expect(page.getByText('Precision', { exact: false }).first()).toBeVisible({ timeout: 5_000 });
-    await expect(page.getByText('Recall', { exact: false }).first()).toBeVisible({ timeout: 5_000 });
+    await expect(page.getByText('Precision', { exact: false }).first()).toBeVisible({
+      timeout: 5_000,
+    });
+    await expect(page.getByText('Recall', { exact: false }).first()).toBeVisible({
+      timeout: 5_000,
+    });
     await expect(page.getByText('F1', { exact: false }).first()).toBeVisible({ timeout: 5_000 });
-    await expect(page.getByText('Mean IoU', { exact: false }).first()).toBeVisible({ timeout: 5_000 });
+    await expect(page.getByText('Mean IoU', { exact: false }).first()).toBeVisible({
+      timeout: 5_000,
+    });
 
     // Assert TP/FP/FN tiles are visible — seeded data has TP=3, FP=0, FN=0.
     await expect(page.getByText('TP', { exact: false }).first()).toBeVisible({ timeout: 5_000 });
 
     // Assert prediction overlay section is present.
-    await expect(page.getByText('Prediction overlay', { exact: false }).first()).toBeVisible({ timeout: 5_000 });
+    await expect(page.getByText('Prediction overlay', { exact: false }).first()).toBeVisible({
+      timeout: 5_000,
+    });
 
     expect(errors).toHaveLength(0);
   });

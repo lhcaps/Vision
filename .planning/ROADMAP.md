@@ -1360,16 +1360,16 @@ Wave E (Annotation + Timeline + Inspector Final Split) is structurally complete 
 
 8 endpoint checks proving the live NestJS API surface works against seeded PostgreSQL fixtures:
 
-| # | Endpoint | Check |
-|---|----------|-------|
-| 1 | `GET /api/health` | `ok: true`, `service: 'visionflow-api'` |
-| 2 | `GET /api/health/runtime/status` | `api.ok: true`, `database.status: 'ready'` |
-| 3 | `GET /api/projects/:projectId/datasets` | Canonical dataset present |
-| 4 | `GET /api/.../annotation-workspace?assetId=asset_frame_1482` | MANUAL annotations present |
-| 5 | `GET /api/.../export/coco` | LOCKED status, deterministic hash, COCO schema valid, hash stable across 2 calls |
-| 6 | `GET /api/.../inference-jobs` | Canonical job visible |
-| 7 | `GET /api/.../predictions` | >= 3 predictions |
-| 8 | `GET /api/.../evaluation` | `report.inputHash === FIXTURE_IDS.evaluation.inputHash` |
+| #   | Endpoint                                                     | Check                                                                            |
+| --- | ------------------------------------------------------------ | -------------------------------------------------------------------------------- |
+| 1   | `GET /api/health`                                            | `ok: true`, `service: 'visionflow-api'`                                          |
+| 2   | `GET /api/health/runtime/status`                             | `api.ok: true`, `database.status: 'ready'`                                       |
+| 3   | `GET /api/projects/:projectId/datasets`                      | Canonical dataset present                                                        |
+| 4   | `GET /api/.../annotation-workspace?assetId=asset_frame_1482` | MANUAL annotations present                                                       |
+| 5   | `GET /api/.../export/coco`                                   | LOCKED status, deterministic hash, COCO schema valid, hash stable across 2 calls |
+| 6   | `GET /api/.../inference-jobs`                                | Canonical job visible                                                            |
+| 7   | `GET /api/.../predictions`                                   | >= 3 predictions                                                                 |
+| 8   | `GET /api/.../evaluation`                                    | `report.inputHash === FIXTURE_IDS.evaluation.inputHash`                          |
 
 - Uses `FIXTURE_IDS` from `scripts/fixtures/visionflow-fixtures.ts` — no hard-coded IDs
 - `--strict` mode: exit 1 if API unreachable or any check fails
@@ -1508,37 +1508,37 @@ v1.1 is complete only when all of the following are true:
 
 ## Recommended Execution Order
 
-| #     | Phase                                       | Blocked By                                           |
-| ----- | ------------------------------------------- | ---------------------------------------------------- |
-| 11    | Public README & Portfolio First Impression  | Phase 10                                             |
-| 12A   | CI/CD Completeness                          | Phase 10                                             |
-| 12B   | Local Stack & Seed Reliability              | Phase 12A                                            |
-| 12C   | Dev Flow & Local Reliability Closeout       | Phase 12A                                            |
-| 13    | Security & Input Validation Hardening       | Phase 11, Phase 12A                                  |
-| 14A   | Adapter Boundary Cleanup                    | Phase 12A                                            |
-| 14B   | Domain Invariants & State Machines          | Phase 14A                                            |
-| 15    | Observability & Health Checks               | Phase 14A                                            |
-| 15.5  | Runtime Truth & State Consistency           | Phase 15                                             |
-| 15.6  | Workflow Guidance & Primary Next Action     | Phase 15.5                                           |
-| 15.7  | Contextual Inspector                        | Phase 15.5                                           |
-| 15.8  | UX States & Table Actions                   | Phase 15.6, Phase 15.7                               |
-| 15.9  | Visual System Hardening                     | Phase 15.8                                           |
-| 15.10 | Motion, Portfolio Mode & Regression Tests   | Phase 15.9                                           |
-| 16A   | Frontend Split Minimum                      | Phase 15.10                                          |
-| 17    | Real Media Processing                       | Phase 14A, Phase 14B, Phase 15                       |
-| 18    | Dataset Locking & Deterministic COCO Export | Phase 14B                                            |
-| 19    | Real ONNX Detector & Prediction Persistence | Phase 17, Phase 18                                   |
-| 20    | Evaluation Report End-to-End                | Phase 19                                             |
-| 20B   | Evaluation Correctness Hardening            | Phase 20                                             |
-| 20C   | Evaluation Integrity Finalization           | Phase 20B                                            |
-| 20D   | Evaluation Persistence & CI Hardening       | Phase 20C                                            |
-| 20E   | Evaluation Migration Finalization           | Phase 20D                                            |
-| 20F   | Migration Chain Baseline & Backfill        | Phase 20E                                            |
-| 21-0  | Planning Cleanup Patch                     | Phase 20F                                            |
-| 21    | Frontend Feature Split Completion          | Phase 20F                                            |
-| 22A   | Fixture & Test Infrastructure             | Phase 14A                                            |
-| 22B   | Production-Path Test Suite                    | Phase 22A   | ✅ Done 2026-05-05 |
-| 23    | Full E2E Playwright & Demo Video            | Phase 22B   | ✅ Done 2026-05-05 |
+| #     | Phase                                       | Blocked By                     |
+| ----- | ------------------------------------------- | ------------------------------ | ------------------ |
+| 11    | Public README & Portfolio First Impression  | Phase 10                       |
+| 12A   | CI/CD Completeness                          | Phase 10                       |
+| 12B   | Local Stack & Seed Reliability              | Phase 12A                      |
+| 12C   | Dev Flow & Local Reliability Closeout       | Phase 12A                      |
+| 13    | Security & Input Validation Hardening       | Phase 11, Phase 12A            |
+| 14A   | Adapter Boundary Cleanup                    | Phase 12A                      |
+| 14B   | Domain Invariants & State Machines          | Phase 14A                      |
+| 15    | Observability & Health Checks               | Phase 14A                      |
+| 15.5  | Runtime Truth & State Consistency           | Phase 15                       |
+| 15.6  | Workflow Guidance & Primary Next Action     | Phase 15.5                     |
+| 15.7  | Contextual Inspector                        | Phase 15.5                     |
+| 15.8  | UX States & Table Actions                   | Phase 15.6, Phase 15.7         |
+| 15.9  | Visual System Hardening                     | Phase 15.8                     |
+| 15.10 | Motion, Portfolio Mode & Regression Tests   | Phase 15.9                     |
+| 16A   | Frontend Split Minimum                      | Phase 15.10                    |
+| 17    | Real Media Processing                       | Phase 14A, Phase 14B, Phase 15 |
+| 18    | Dataset Locking & Deterministic COCO Export | Phase 14B                      |
+| 19    | Real ONNX Detector & Prediction Persistence | Phase 17, Phase 18             |
+| 20    | Evaluation Report End-to-End                | Phase 19                       |
+| 20B   | Evaluation Correctness Hardening            | Phase 20                       |
+| 20C   | Evaluation Integrity Finalization           | Phase 20B                      |
+| 20D   | Evaluation Persistence & CI Hardening       | Phase 20C                      |
+| 20E   | Evaluation Migration Finalization           | Phase 20D                      |
+| 20F   | Migration Chain Baseline & Backfill         | Phase 20E                      |
+| 21-0  | Planning Cleanup Patch                      | Phase 20F                      |
+| 21    | Frontend Feature Split Completion           | Phase 20F                      |
+| 22A   | Fixture & Test Infrastructure               | Phase 14A                      |
+| 22B   | Production-Path Test Suite                  | Phase 22A                      | ✅ Done 2026-05-05 |
+| 23    | Full E2E Playwright & Demo Video            | Phase 22B                      | ✅ Done 2026-05-05 |
 
 ## Brutal Scope Rules
 

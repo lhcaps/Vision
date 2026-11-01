@@ -16,17 +16,17 @@ Several phases (13, 14A, 14B, 16A, 17, 18, 20B, 20C, 20D, 20E, 20F) completed th
 
 ### A. REQUIREMENTS.md sync
 
-| Section | Before | After | Phase |
-|---------|--------|-------|-------|
-| PORT-01–06 | Pending | Done | 11 |
-| SEC-01–11 | Pending | Done | 13 |
-| ABS-01–10 | Pending | Done | 14A |
-| DOM-01–07 | Pending | Done | 14B |
-| UI-01–09 | Pending | Partial | 16A |
-| MED-01–09 | Pending | Partial | 17 |
-| LOCK-01–09 | Pending | Done | 18 |
-| DET-01–08 | Pending | Done | 19 |
-| EVAL-01–09 | Pending | Done | 20 |
+| Section    | Before  | After   | Phase |
+| ---------- | ------- | ------- | ----- |
+| PORT-01–06 | Pending | Done    | 11    |
+| SEC-01–11  | Pending | Done    | 13    |
+| ABS-01–10  | Pending | Done    | 14A   |
+| DOM-01–07  | Pending | Done    | 14B   |
+| UI-01–09   | Pending | Partial | 16A   |
+| MED-01–09  | Pending | Partial | 17    |
+| LOCK-01–09 | Pending | Done    | 18    |
+| DET-01–08  | Pending | Done    | 19    |
+| EVAL-01–09 | Pending | Done    | 20    |
 
 - MED-02: Frame extraction deferred → Partial
 - MED-07: Failure flow documented
@@ -70,12 +70,12 @@ Several phases (13, 14A, 14B, 16A, 17, 18, 20B, 20C, 20D, 20E, 20F) completed th
 
 ## Files Changed
 
-| File | Changes |
-|------|---------|
-| `.planning/REQUIREMENTS.md` | PORT/SEC/ABS/DOM/UI/MED/LOCK/DET/EVAL checked, trace table updated, TEST/E2E tagged |
-| `.planning/MILESTONES.md` | v1.1 completion list, Phase 20F status |
-| `README.md` | DB migration commands, architecture block, Implementation Status, Known Limitations |
-| `.planning/ROADMAP.md` | Header, Phase 21-0 section, Phase 21 waves, Phase 22A/B adjustments, execution table |
+| File                        | Changes                                                                              |
+| --------------------------- | ------------------------------------------------------------------------------------ |
+| `.planning/REQUIREMENTS.md` | PORT/SEC/ABS/DOM/UI/MED/LOCK/DET/EVAL checked, trace table updated, TEST/E2E tagged  |
+| `.planning/MILESTONES.md`   | v1.1 completion list, Phase 20F status                                               |
+| `README.md`                 | DB migration commands, architecture block, Implementation Status, Known Limitations  |
+| `.planning/ROADMAP.md`      | Header, Phase 21-0 section, Phase 21 waves, Phase 22A/B adjustments, execution table |
 
 ## Verification
 

@@ -16,28 +16,36 @@ Added `GET /api/health/runtime/status` — the single source of truth for fronte
 **Endpoint:** `http://localhost:3000/api/health/runtime/status`
 
 **Response shape:**
+
 ```json
 {
   "api": { "ok": true, "mode": "database" },
   "database": { "ok": true, "status": "ready" },
   "queue": { "ok": true, "mode": "bullmq", "status": "ready" },
   "cvWorker": {
-    "ok": true, "configured": true, "url": "http://localhost:8000",
-    "requestedDetectorMode": "onnx", "activeDetectorMode": "onnx",
-    "onnxAvailable": true, "modelVersion": "yolov8n-640",
+    "ok": true,
+    "configured": true,
+    "url": "http://localhost:8000",
+    "requestedDetectorMode": "onnx",
+    "activeDetectorMode": "onnx",
+    "onnxAvailable": true,
+    "modelVersion": "yolov8n-640",
     "modelPath": "models\\yolov8n.onnx",
-    "frameExtractionAvailable": null, "error": null
+    "frameExtractionAvailable": null,
+    "error": null
   }
 }
 ```
 
 **Key behavior:**
+
 - Always returns HTTP 200 — even if CV worker is down (only `cvWorker.ok = false`)
 - CV worker details sourced from live `/health` call to `http://localhost:8000/health`
 - `INFERENCE_QUEUE_MODE` env var drives queue mode detection (not `DATA_MODE`)
 - No secret leaking — model paths are masked
 
 **Files changed:**
+
 - `apps/api/src/health/dto/runtime-status-response.dto.ts` — new DTO
 - `apps/api/src/health/health.service.ts` — added `getRuntimeStatus()`
 - `apps/api/src/health/health.controller.ts` — added `GET /runtime/status`
@@ -47,6 +55,7 @@ Added `GET /api/health/runtime/status` — the single source of truth for fronte
 ### 21B.2 — Frontend Runtime API + Hook
 
 **`useRuntimeStatus` hook behavior:**
+
 - Fetches `/api/health/runtime/status` on mount
 - Refreshes every 8 seconds
 - 5-second fetch timeout
@@ -70,6 +79,7 @@ Added `GET /api/health/runtime/status` — the single source of truth for fronte
 | `unavailable` | Unavailable (red) |
 
 **Files created:**
+
 - `apps/web/src/features/runtime/runtime.api.ts`
 - `apps/web/src/features/runtime/runtime.types.ts`
 - `apps/web/src/features/runtime/useRuntimeStatus.ts`
@@ -78,6 +88,7 @@ Added `GET /api/health/runtime/status` — the single source of truth for fronte
 ### 21B.3 — ReadinessStrip + Controller Extraction
 
 **`ReadinessStrip` before:**
+
 ```tsx
 // hard-coded
 { label: 'CV', value: 'Mock detector mounted', icon: Activity, tone: '...' }
@@ -104,19 +115,19 @@ Added `GET /api/health/runtime/status` — the single source of truth for fronte
 
 **Automated Playwright smoke test passed** (`scripts/smoke-21b.cjs`, now removed after use):
 
-| Check | Result |
-|---|---|
-| App loads at `http://localhost:5173` | PASS |
-| Page title "VisionFlow Studio" | PASS |
-| `/api/health/runtime/status` called | PASS (200, called twice — initial + 8s refresh) |
-| "Database ready" shown | PASS |
-| "ONNX detector ready" shown | PASS |
-| "BullMQ ready" shown | PASS |
-| "Mock detector mounted" (hard-coded) | 0 occurrences — ELIMINATED |
-| "Mock detector fallback" shown | 0 occurrences (ONNX configured) |
-| "Worker unavailable" shown | 0 occurrences (worker healthy) |
-| Run button visible | PASS |
-| App-level console errors | None |
+| Check                                | Result                                          |
+| ------------------------------------ | ----------------------------------------------- |
+| App loads at `http://localhost:5173` | PASS                                            |
+| Page title "VisionFlow Studio"       | PASS                                            |
+| `/api/health/runtime/status` called  | PASS (200, called twice — initial + 8s refresh) |
+| "Database ready" shown               | PASS                                            |
+| "ONNX detector ready" shown          | PASS                                            |
+| "BullMQ ready" shown                 | PASS                                            |
+| "Mock detector mounted" (hard-coded) | 0 occurrences — ELIMINATED                      |
+| "Mock detector fallback" shown       | 0 occurrences (ONNX configured)                 |
+| "Worker unavailable" shown           | 0 occurrences (worker healthy)                  |
+| Run button visible                   | PASS                                            |
+| App-level console errors             | None                                            |
 
 **Key finding:** The `useRuntimeStatus` hook in App.tsx was calling `apiJson('/health/runtime/status')` (missing `/api` global prefix). Fixed to `apiJson('/api/health/runtime/status')`. Without this fix, the endpoint returned 404 and ReadinessStrip was stuck in "Loading..." state indefinitely.
 
@@ -124,38 +135,41 @@ Added `GET /api/health/runtime/status` — the single source of truth for fronte
 
 ## Verification Results
 
-| Check | Result |
-|---|---|
-| `pnpm --filter @visionflow/contracts typecheck` | PASS |
-| `pnpm --filter @visionflow/api typecheck` | PASS |
-| `pnpm --filter @visionflow/web typecheck` | PASS |
-| `pnpm test` | 314 tests PASS |
-| `pnpm lint` | PASS |
-| `pnpm build` | PASS |
-| `curl http://localhost:3000/api/health` | HTTP 200 |
-| `curl http://localhost:3000/api/health/runtime/status` | HTTP 200, correct payload |
-| `curl http://localhost:8000/health` | HTTP 200 |
-| Browser smoke | PASS — Playwright: "Database ready", "ONNX detector ready", "BullMQ ready", no "Mock detector mounted", no errors |
+| Check                                                  | Result                                                                                                            |
+| ------------------------------------------------------ | ----------------------------------------------------------------------------------------------------------------- |
+| `pnpm --filter @visionflow/contracts typecheck`        | PASS                                                                                                              |
+| `pnpm --filter @visionflow/api typecheck`              | PASS                                                                                                              |
+| `pnpm --filter @visionflow/web typecheck`              | PASS                                                                                                              |
+| `pnpm test`                                            | 314 tests PASS                                                                                                    |
+| `pnpm lint`                                            | PASS                                                                                                              |
+| `pnpm build`                                           | PASS                                                                                                              |
+| `curl http://localhost:3000/api/health`                | HTTP 200                                                                                                          |
+| `curl http://localhost:3000/api/health/runtime/status` | HTTP 200, correct payload                                                                                         |
+| `curl http://localhost:8000/health`                    | HTTP 200                                                                                                          |
+| Browser smoke                                          | PASS — Playwright: "Database ready", "ONNX detector ready", "BullMQ ready", no "Mock detector mounted", no errors |
 
 ---
 
 ## Runtime Status Endpoint Sample Response
 
 **With ONNX configured and worker healthy:**
+
 ```json
 {
   "api": { "ok": true, "mode": "database" },
   "database": { "ok": true, "status": "ready" },
   "queue": { "ok": true, "mode": "bullmq", "status": "ready" },
   "cvWorker": {
-    "ok": true, "configured": true,
+    "ok": true,
+    "configured": true,
     "url": "http://localhost:8000",
     "requestedDetectorMode": "onnx",
     "activeDetectorMode": "onnx",
     "onnxAvailable": true,
     "modelVersion": "yolov8n-640",
     "modelPath": "models\\yolov8n.onnx",
-    "frameExtractionAvailable": null, "error": null
+    "frameExtractionAvailable": null,
+    "error": null
   }
 }
 ```
@@ -175,6 +189,7 @@ Added `GET /api/health/runtime/status` — the single source of truth for fronte
 ## What Changed in App.tsx
 
 **Before (Phase 21A, 529 lines):**
+
 - Owned `datasetVersions`, `datasetSourceState`, `selectedDatasetVersionId` state + loading effect
 - Owned `job` state + SSE effect + polling effect + startJob
 - Owned `evaluationReport`, `isEvaluating`, `evaluationError`, `predictions` + fetch effect + handleRunEvaluation
@@ -183,6 +198,7 @@ Added `GET /api/health/runtime/status` — the single source of truth for fronte
 - `runtimeState.health` derived client-side with `'unknown'` values
 
 **After (Phase 21B, ~144 lines):**
+
 - Composes 3 extracted controllers
 - Still owns UI state: `section`, `threshold`, `annotationRows`, `mediaUploads`, `selectedMediaAssetId`, `pipeline*` state
 - **NOW owns `useRuntimeStatus` call** — single source of truth for runtime readiness
@@ -191,6 +207,7 @@ Added `GET /api/health/runtime/status` — the single source of truth for fronte
 - No duplicate runtime polling — `useRuntimeStatus` called exactly once at App level
 
 **Finalization changes (2026-05-05):**
+
 - `runtime.api.ts`: Fixed missing `/api` prefix in endpoint path (404 → 200)
 - `workbench-runtime.ts`: Expanded `HealthStatus` union to cover all backend states (`'fallback'`, `'unknown'`, `'mock'`)
 - `App.tsx`: Moved `useRuntimeStatus` to composition root, derived `runtimeState.health` from backend truth

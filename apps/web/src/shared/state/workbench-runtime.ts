@@ -13,7 +13,13 @@ export type RuntimeMode = 'loading' | 'api' | 'fallback' | 'mock' | 'degraded';
 
 export type JobStatus = 'NONE' | 'QUEUED' | 'RUNNING' | 'SUCCEEDED' | 'FAILED' | 'CANCELLED';
 
-export type HealthStatus = 'loading' | 'connected' | 'unavailable' | 'unknown' | 'fallback' | 'mock';
+export type HealthStatus =
+  | 'loading'
+  | 'connected'
+  | 'unavailable'
+  | 'unknown'
+  | 'fallback'
+  | 'mock';
 
 export type WorkbenchRuntimeState = {
   /** How the runtime was bootstrapped */

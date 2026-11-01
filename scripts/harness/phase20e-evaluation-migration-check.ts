@@ -395,12 +395,37 @@ async function main() {
       >('SELECT "metricsJson" FROM "EvaluationReport" ORDER BY "createdAt" DESC LIMIT 1');
       if (latestRows.length > 0) {
         // Inline schema-equivalent check (no @visionflow/contracts dependency).
-        const requiredFields = ['id', 'jobId', 'datasetVersionId', 'algorithmVersion', 'iouThreshold', 'inputHash', 'metricsHash', 'precision', 'recall', 'f1', 'meanIoU', 'truePositives', 'falsePositives', 'falseNegatives', 'predictionCount', 'groundTruthCount', 'assetCount', 'evaluatedAt'];
+        const requiredFields = [
+          'id',
+          'jobId',
+          'datasetVersionId',
+          'algorithmVersion',
+          'iouThreshold',
+          'inputHash',
+          'metricsHash',
+          'precision',
+          'recall',
+          'f1',
+          'meanIoU',
+          'truePositives',
+          'falsePositives',
+          'falseNegatives',
+          'predictionCount',
+          'groundTruthCount',
+          'assetCount',
+          'evaluatedAt',
+        ];
         const latestMetrics = latestRows[0].metricsJson;
-        const missing = requiredFields.filter((f) => !(f in latestMetrics) || latestMetrics[f] === null);
+        const missing = requiredFields.filter(
+          (f) => !(f in latestMetrics) || latestMetrics[f] === null
+        );
         const hashRegex = /^[a-f0-9]{16}$/;
-        const inputHashOk = typeof latestMetrics.inputHash === 'string' && hashRegex.test(latestMetrics.inputHash as string);
-        const metricsHashOk = typeof latestMetrics.metricsHash === 'string' && hashRegex.test(latestMetrics.metricsHash as string);
+        const inputHashOk =
+          typeof latestMetrics.inputHash === 'string' &&
+          hashRegex.test(latestMetrics.inputHash as string);
+        const metricsHashOk =
+          typeof latestMetrics.metricsHash === 'string' &&
+          hashRegex.test(latestMetrics.metricsHash as string);
 
         const passed = missing.length === 0 && inputHashOk && metricsHashOk;
         results.push({

@@ -30,6 +30,7 @@ Created `apps/web/e2e/full-vertical-slice.spec.ts` — 19 Playwright tests cover
 ### Phase 23 Meta-Harness
 
 Created `scripts/harness/phase23-full-e2e-check.ts` which:
+
 - Preflights API and Web reachability with clear boot instructions on failure
 - Runs `pnpm meta:harness:phase22b -- --strict --with-api` (which composes Phase 22A + 22B)
 - Runs Playwright full-vertical-slice spec from the `apps/web` directory
@@ -83,6 +84,7 @@ Phase 22B already proved 8/8 live API checks pass against seeded fixtures. Phase
 ## Regression Verification
 
 All previous phase harnesses preserved and verified:
+
 - Phase 20C harness: still passes
 - Phase 20D harness: still passes
 - Phase 20E harness: still passes
@@ -98,22 +100,22 @@ All previous phase harnesses preserved and verified:
 
 ## Files Changed
 
-| File | Change |
-|------|--------|
-| `apps/web/e2e/full-vertical-slice.spec.ts` | Created — 19 Playwright tests |
-| `scripts/harness/phase23-full-e2e-check.ts` | Created — meta-harness |
-| `docs/demo/DEMO-CHECKLIST.md` | Created — manual demo walkthrough |
-| `docs/demo/README-DEMO.md` | Updated — exact commands |
-| `README.md` | Updated — Phase 23 done, demo section honest |
-| `apps/web/playwright.config.ts` | Fixed — baseURL fallback |
-| `.env` | Added — `VITE_WEB_BASE_URL` |
-| `package.json` | Added — `meta:harness:phase23` script |
-| `.planning/STATE.md` | Updated — Phase 23 complete |
-| `.planning/ROADMAP.md` | Updated — Phase 23 complete |
-| `.planning/MILESTONES.md` | Updated — v1.1 complete |
-| `.planning/phases/phase-23-full-e2e-demo/23-PLAN.md` | Updated — status complete |
-| `.planning/phases/phase-23-full-e2e-demo/23-SUMMARY.md` | Created |
-| `.planning/phases/phase-23-full-e2e-demo/23-REVIEW.md` | Created |
+| File                                                    | Change                                       |
+| ------------------------------------------------------- | -------------------------------------------- |
+| `apps/web/e2e/full-vertical-slice.spec.ts`              | Created — 19 Playwright tests                |
+| `scripts/harness/phase23-full-e2e-check.ts`             | Created — meta-harness                       |
+| `docs/demo/DEMO-CHECKLIST.md`                           | Created — manual demo walkthrough            |
+| `docs/demo/README-DEMO.md`                              | Updated — exact commands                     |
+| `README.md`                                             | Updated — Phase 23 done, demo section honest |
+| `apps/web/playwright.config.ts`                         | Fixed — baseURL fallback                     |
+| `.env`                                                  | Added — `VITE_WEB_BASE_URL`                  |
+| `package.json`                                          | Added — `meta:harness:phase23` script        |
+| `.planning/STATE.md`                                    | Updated — Phase 23 complete                  |
+| `.planning/ROADMAP.md`                                  | Updated — Phase 23 complete                  |
+| `.planning/MILESTONES.md`                               | Updated — v1.1 complete                      |
+| `.planning/phases/phase-23-full-e2e-demo/23-PLAN.md`    | Updated — status complete                    |
+| `.planning/phases/phase-23-full-e2e-demo/23-SUMMARY.md` | Created                                      |
+| `.planning/phases/phase-23-full-e2e-demo/23-REVIEW.md`  | Created                                      |
 
 ---
 

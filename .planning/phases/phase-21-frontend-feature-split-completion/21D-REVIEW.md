@@ -8,16 +8,16 @@
 
 ## Score Breakdown
 
-| Dimension | Score | Notes |
-|---|---|---|
-| Fake state removal | 10/10 | 8 fake props eliminated from InspectorRouter |
-| Honest embedded-notice | 10/10 | Honest "Embedded" notice for annotate/pipeline |
-| No prop-surface regression | 10/10 | AppRoutes prop surface unchanged (no lifting) |
-| Dead type cleanup | 10/10 | 4 unused types removed from inspector.types.ts |
-| Phase 21B runtime truth | 10/10 | useRuntimeStatus single-call preserved |
-| Phase 21C preservation | 10/10 | seededGroundTruth, neutral pipeline text preserved |
-| Artifact completeness | 10/10 | All planning artifacts updated |
-| **Overall** | **10/10** | Clean closeout |
+| Dimension                  | Score     | Notes                                              |
+| -------------------------- | --------- | -------------------------------------------------- |
+| Fake state removal         | 10/10     | 8 fake props eliminated from InspectorRouter       |
+| Honest embedded-notice     | 10/10     | Honest "Embedded" notice for annotate/pipeline     |
+| No prop-surface regression | 10/10     | AppRoutes prop surface unchanged (no lifting)      |
+| Dead type cleanup          | 10/10     | 4 unused types removed from inspector.types.ts     |
+| Phase 21B runtime truth    | 10/10     | useRuntimeStatus single-call preserved             |
+| Phase 21C preservation     | 10/10     | seededGroundTruth, neutral pipeline text preserved |
+| Artifact completeness      | 10/10     | All planning artifacts updated                     |
+| **Overall**                | **10/10** | Clean closeout                                     |
 
 ---
 
@@ -48,6 +48,7 @@
 **Option A1 chosen** — Honest embedded-notice panels for annotate/pipeline sections in InspectorRouter.
 
 Option B (extracting feature route containers) was rejected because:
+
 - Would require creating new route container files
 - Would require lifting annotation/pipeline state to App root — undoing Phase 21C prop-surface reduction
 - PipelinePanel already renders PipelineInspector internally — a second inspector was always redundant
@@ -57,11 +58,11 @@ Option B (extracting feature route containers) was rejected because:
 
 ## Risks
 
-| Risk | Severity | Mitigation |
-|---|---|---|
-| Users confused by dual inspector rendering for pipeline | Low | PipelinePanel inspector is prominent; global rail is secondary notice |
-| Users think embedded-notice means the inspector is broken | Low | "Embedded" label with clear description text |
-| AnnotationInspector/PipelineInspector components become orphaned | Low | They are used inside PipelinePanel and AnnotationEnginePanel directly |
+| Risk                                                             | Severity | Mitigation                                                            |
+| ---------------------------------------------------------------- | -------- | --------------------------------------------------------------------- |
+| Users confused by dual inspector rendering for pipeline          | Low      | PipelinePanel inspector is prominent; global rail is secondary notice |
+| Users think embedded-notice means the inspector is broken        | Low      | "Embedded" label with clear description text                          |
+| AnnotationInspector/PipelineInspector components become orphaned | Low      | They are used inside PipelinePanel and AnnotationEnginePanel directly |
 
 ---
 
@@ -69,19 +70,19 @@ Option B (extracting feature route containers) was rejected because:
 
 All checks passed:
 
-| Command | Result |
-|---|---|
-| `pnpm --filter @visionflow/web typecheck` | PASS |
-| `pnpm --filter @visionflow/web test` | PASS — 65 tests |
-| `pnpm --filter @visionflow/web lint` | PASS |
-| `pnpm --filter @visionflow/web build` | PASS |
-| `grep "annotations={}"` | 0 results |
-| `grep "setSelectedAnnotation=()"` | 0 results |
-| `grep "setThreshold=()"` | 0 results |
-| `grep "pipelineDefinition={demoSnapshot"` | 0 results |
-| `grep "pipelineValidation={validatePipelineDefinition"` | 0 results |
-| `grep "useRuntimeStatus" (only App.tsx)` | PASS |
-| Playwright nav smoke (10 checks) | **PASS** — all 8 sections navigate without errors, no console errors |
+| Command                                                 | Result                                                               |
+| ------------------------------------------------------- | -------------------------------------------------------------------- |
+| `pnpm --filter @visionflow/web typecheck`               | PASS                                                                 |
+| `pnpm --filter @visionflow/web test`                    | PASS — 65 tests                                                      |
+| `pnpm --filter @visionflow/web lint`                    | PASS                                                                 |
+| `pnpm --filter @visionflow/web build`                   | PASS                                                                 |
+| `grep "annotations={}"`                                 | 0 results                                                            |
+| `grep "setSelectedAnnotation=()"`                       | 0 results                                                            |
+| `grep "setThreshold=()"`                                | 0 results                                                            |
+| `grep "pipelineDefinition={demoSnapshot"`               | 0 results                                                            |
+| `grep "pipelineValidation={validatePipelineDefinition"` | 0 results                                                            |
+| `grep "useRuntimeStatus" (only App.tsx)`                | PASS                                                                 |
+| Playwright nav smoke (10 checks)                        | **PASS** — all 8 sections navigate without errors, no console errors |
 
 ---
 

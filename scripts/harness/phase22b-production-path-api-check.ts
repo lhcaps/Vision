@@ -65,9 +65,7 @@ function logInfo(msg: string) {
 // API_BASE_URL: harness scripts use /api-prefixed paths (e.g. /health, /projects/...).
 // This differs from the frontend convention where paths include /api/ and BASE_URL is host-only.
 // The harness therefore uses a dedicated API_BASE_URL env var (not VITE_API_BASE_URL).
-const API_BASE_URL =
-  process.env.API_BASE_URL ||
-  'http://localhost:3000/api';
+const API_BASE_URL = process.env.API_BASE_URL || 'http://localhost:3000/api';
 
 interface CheckResult {
   name: string;
@@ -83,7 +81,9 @@ function createTimeoutSignal(ms: number): AbortSignal {
   return controller.signal;
 }
 
-async function apiGet<T = unknown>(path: string): Promise<{ ok: boolean; status: number; data?: T; error?: string }> {
+async function apiGet<T = unknown>(
+  path: string
+): Promise<{ ok: boolean; status: number; data?: T; error?: string }> {
   try {
     const url = `${API_BASE_URL.replace(/\/$/, '')}${path}`;
     const res = await fetch(url, {
@@ -93,7 +93,11 @@ async function apiGet<T = unknown>(path: string): Promise<{ ok: boolean; status:
     let data: T | undefined;
     const contentType = res.headers.get('content-type') || '';
     if (contentType.includes('application/json')) {
-      try { data = await res.json() as T; } catch { /* ignore */ }
+      try {
+        data = (await res.json()) as T;
+      } catch {
+        /* ignore */
+      }
     }
     return { ok: res.ok, status: res.status, data, error: undefined };
   } catch (err) {
@@ -113,15 +117,28 @@ async function checkHealth(results: CheckResult[]) {
   }
   const d = r.data;
   const ok = d?.ok === true && d?.service === 'visionflow-api';
-  results.push({ name: 'GET /api/health', passed: ok, details: ok ? `${d?.service} at ${d?.time}` : JSON.stringify(d) });
+  results.push({
+    name: 'GET /api/health',
+    passed: ok,
+    details: ok ? `${d?.service} at ${d?.time}` : JSON.stringify(d),
+  });
   if (ok) logPass(`ok=${d.ok}, service=${d.service}`);
   else logFail(`Expected ok=true, service=visionflow-api — got: ${JSON.stringify(d)}`);
 }
 
 async function checkRuntimeStatus(results: CheckResult[]) {
-  const r = await apiGet<{ api: { ok: boolean; mode: string }; database: { ok: boolean | null; status: string }; queue: { ok: boolean | null; mode: string; status: string }; cvWorker: { ok: boolean; configured: boolean; activeDetectorMode: string | null } }>('/health/runtime/status');
+  const r = await apiGet<{
+    api: { ok: boolean; mode: string };
+    database: { ok: boolean | null; status: string };
+    queue: { ok: boolean | null; mode: string; status: string };
+    cvWorker: { ok: boolean; configured: boolean; activeDetectorMode: string | null };
+  }>('/health/runtime/status');
   if (!r.ok) {
-    results.push({ name: 'GET /api/health/runtime/status', passed: false, details: `HTTP ${r.status}` });
+    results.push({
+      name: 'GET /api/health/runtime/status',
+      passed: false,
+      details: `HTTP ${r.status}`,
+    });
     logFail(`HTTP ${r.status}`);
     return;
   }
@@ -132,7 +149,9 @@ async function checkRuntimeStatus(results: CheckResult[]) {
   results.push({
     name: 'GET /api/health/runtime/status',
     passed: ok,
-    details: ok ? `api=${d.api.mode}, db=${d.database.status}, queue=${d.queue.status}` : JSON.stringify(d),
+    details: ok
+      ? `api=${d.api.mode}, db=${d.database.status}, queue=${d.queue.status}`
+      : JSON.stringify(d),
   });
   if (ok) logPass(`api=${d.api.mode}, db=${d.database.status}, queue=${d.queue.status}`);
   else logFail(JSON.stringify(d));
@@ -140,9 +159,15 @@ async function checkRuntimeStatus(results: CheckResult[]) {
 
 async function checkDatasetList(results: CheckResult[]) {
   const projectId = F.project.id;
-  const r = await apiGet<{ datasets: Array<{ id: string; name: string; versionCount: number }> }>(`/projects/${projectId}/datasets`);
+  const r = await apiGet<{ datasets: Array<{ id: string; name: string; versionCount: number }> }>(
+    `/projects/${projectId}/datasets`
+  );
   if (!r.ok) {
-    results.push({ name: 'GET /api/projects/:projectId/datasets', passed: false, details: `HTTP ${r.status}` });
+    results.push({
+      name: 'GET /api/projects/:projectId/datasets',
+      passed: false,
+      details: `HTTP ${r.status}`,
+    });
     logFail(`HTTP ${r.status}`);
     return;
   }
@@ -152,10 +177,15 @@ async function checkDatasetList(results: CheckResult[]) {
   results.push({
     name: 'GET /api/projects/:projectId/datasets',
     passed: ok,
-    details: ok ? `found dataset ${F.dataset.id}` : `canonical dataset NOT FOUND — got: ${JSON.stringify(datasets.map((d) => d.id))}`,
+    details: ok
+      ? `found dataset ${F.dataset.id}`
+      : `canonical dataset NOT FOUND — got: ${JSON.stringify(datasets.map((d) => d.id))}`,
   });
   if (ok) logPass(`canonical dataset ${F.dataset.id} (${canonical.name}) found`);
-  else logFail(`canonical dataset ${F.dataset.id} not in list: ${JSON.stringify(datasets.map((d) => d.id))}`);
+  else
+    logFail(
+      `canonical dataset ${F.dataset.id} not in list: ${JSON.stringify(datasets.map((d) => d.id))}`
+    );
 }
 
 async function checkAnnotationWorkspace(results: CheckResult[]) {
@@ -169,7 +199,11 @@ async function checkAnnotationWorkspace(results: CheckResult[]) {
   }>(url);
 
   if (!r.ok) {
-    results.push({ name: 'GET /api/.../annotation-workspace', passed: false, details: `HTTP ${r.status}` });
+    results.push({
+      name: 'GET /api/.../annotation-workspace',
+      passed: false,
+      details: `HTTP ${r.status}`,
+    });
     logFail(`HTTP ${r.status}`);
     return;
   }
@@ -186,7 +220,10 @@ async function checkAnnotationWorkspace(results: CheckResult[]) {
       : `annotationSet=${d.annotationSet?.id ?? 'null'}, MANUAL annotations=${manualAnnotations.length}`,
   });
   if (ok) logPass(`${manualAnnotations.length} MANUAL annotation(s) in workspace`);
-  else logFail(`annotationSet=${d.annotationSet?.id ?? 'null'}, MANUAL annotations=${manualAnnotations.length}`);
+  else
+    logFail(
+      `annotationSet=${d.annotationSet?.id ?? 'null'}, MANUAL annotations=${manualAnnotations.length}`
+    );
 }
 
 async function checkCocoExport(results: CheckResult[]) {
@@ -195,8 +232,12 @@ async function checkCocoExport(results: CheckResult[]) {
 
   // Call twice to verify determinism
   const [r1, r2] = await Promise.all([
-    apiGet<Record<string, unknown>>(`/projects/${projectId}/dataset-versions/${versionId}/export/coco`),
-    apiGet<Record<string, unknown>>(`/projects/${projectId}/dataset-versions/${versionId}/export/coco`),
+    apiGet<Record<string, unknown>>(
+      `/projects/${projectId}/dataset-versions/${versionId}/export/coco`
+    ),
+    apiGet<Record<string, unknown>>(
+      `/projects/${projectId}/dataset-versions/${versionId}/export/coco`
+    ),
   ]);
 
   if (!r1.ok || !r2.ok) {
@@ -237,15 +278,23 @@ async function checkCocoExport(results: CheckResult[]) {
   else {
     logFail(`status=${status} (expected LOCKED)`);
     logFail(`hash1=${hash1}, hash2=${hash2} (expected equal and non-empty)`);
-    logFail(`images=${images?.length} (expected >= 3), categories=${categories?.length} (expected >= 3)`);
+    logFail(
+      `images=${images?.length} (expected >= 3), categories=${categories?.length} (expected >= 3)`
+    );
   }
 }
 
 async function checkInferenceJobs(results: CheckResult[]) {
   const projectId = F.project.id;
-  const r = await apiGet<{ jobs: Array<{ id: string; status: string }> }>(`/projects/${projectId}/inference-jobs`);
+  const r = await apiGet<{ jobs: Array<{ id: string; status: string }> }>(
+    `/projects/${projectId}/inference-jobs`
+  );
   if (!r.ok) {
-    results.push({ name: 'GET /api/.../inference-jobs', passed: false, details: `HTTP ${r.status}` });
+    results.push({
+      name: 'GET /api/.../inference-jobs',
+      passed: false,
+      details: `HTTP ${r.status}`,
+    });
     logFail(`HTTP ${r.status}`);
     return;
   }
@@ -266,7 +315,9 @@ async function checkInferenceJobs(results: CheckResult[]) {
 async function checkPredictions(results: CheckResult[]) {
   const projectId = F.project.id;
   const jobId = F.inferenceJob.id;
-  const r = await apiGet<{ predictions: Array<{ id: string }> }>(`/projects/${projectId}/inference-jobs/${jobId}/predictions`);
+  const r = await apiGet<{ predictions: Array<{ id: string }> }>(
+    `/projects/${projectId}/inference-jobs/${jobId}/predictions`
+  );
   if (!r.ok) {
     results.push({ name: 'GET /api/.../predictions', passed: false, details: `HTTP ${r.status}` });
     logFail(`HTTP ${r.status}`);
@@ -277,7 +328,9 @@ async function checkPredictions(results: CheckResult[]) {
   results.push({
     name: 'GET /api/.../predictions',
     passed: ok,
-    details: ok ? `${predictions.length} predictions` : `only ${predictions.length} predictions (expected >= 3)`,
+    details: ok
+      ? `${predictions.length} predictions`
+      : `only ${predictions.length} predictions (expected >= 3)`,
   });
   if (ok) logPass(`${predictions.length} predictions found`);
   else logFail(`expected >= 3 predictions, got ${predictions.length}`);
@@ -286,9 +339,9 @@ async function checkPredictions(results: CheckResult[]) {
 async function checkEvaluationReport(results: CheckResult[]) {
   const projectId = F.project.id;
   const jobId = F.inferenceJob.id;
-  const r = await apiGet<{ report: { inputHash: string; metricsHash: string; jobId: string } | null }>(
-    `/projects/${projectId}/inference-jobs/${jobId}/evaluation`
-  );
+  const r = await apiGet<{
+    report: { inputHash: string; metricsHash: string; jobId: string } | null;
+  }>(`/projects/${projectId}/inference-jobs/${jobId}/evaluation`);
   if (!r.ok) {
     results.push({ name: 'GET /api/.../evaluation', passed: false, details: `HTTP ${r.status}` });
     logFail(`HTTP ${r.status}`);

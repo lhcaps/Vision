@@ -20,18 +20,19 @@ Uses `FIXTURE_IDS` from `scripts/fixtures/visionflow-fixtures.ts` as the single 
 
 **Endpoints checked:**
 
-| # | Endpoint | Fixture Reference | Validation |
-|---|----------|-------------------|------------|
-| 1 | `GET /api/health` | — | `ok: true`, `service: 'visionflow-api'` |
-| 2 | `GET /api/health/runtime/status` | — | `api.ok: true`, `database.status: 'ready'` |
-| 3 | `GET /api/projects/:projectId/datasets` | `FIXTURE_IDS.project.id` | `datasets[0].id === FIXTURE_IDS.dataset.id` |
-| 4 | `GET /api/projects/:projectId/dataset-versions/:versionId/annotation-workspace?assetId=asset_frame_1482` | `FIXTURE_IDS.datasetVersion.id`, `FIXTURE_IDS.annotationWorkspace.assetId` | `annotations` contains MANUAL source |
-| 5 | `GET /api/projects/:projectId/dataset-versions/:versionId/export/coco` | `FIXTURE_IDS.datasetVersion.id` | `metadata.status === 'LOCKED'`, deterministic hash present, COCO schema valid |
-| 6 | `GET /api/projects/:projectId/inference-jobs` | `FIXTURE_IDS.inferenceJob.id` | canonical job visible |
-| 7 | `GET /api/projects/:projectId/inference-jobs/:jobId/predictions` | `FIXTURE_IDS.inferenceJob.id` | at least 3 predictions |
-| 8 | `GET /api/projects/:projectId/inference-jobs/:jobId/evaluation` | `FIXTURE_IDS.inferenceJob.id` | `report.inputHash === FIXTURE_IDS.evaluation.inputHash` |
+| #   | Endpoint                                                                                                 | Fixture Reference                                                          | Validation                                                                    |
+| --- | -------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------- | ----------------------------------------------------------------------------- |
+| 1   | `GET /api/health`                                                                                        | —                                                                          | `ok: true`, `service: 'visionflow-api'`                                       |
+| 2   | `GET /api/health/runtime/status`                                                                         | —                                                                          | `api.ok: true`, `database.status: 'ready'`                                    |
+| 3   | `GET /api/projects/:projectId/datasets`                                                                  | `FIXTURE_IDS.project.id`                                                   | `datasets[0].id === FIXTURE_IDS.dataset.id`                                   |
+| 4   | `GET /api/projects/:projectId/dataset-versions/:versionId/annotation-workspace?assetId=asset_frame_1482` | `FIXTURE_IDS.datasetVersion.id`, `FIXTURE_IDS.annotationWorkspace.assetId` | `annotations` contains MANUAL source                                          |
+| 5   | `GET /api/projects/:projectId/dataset-versions/:versionId/export/coco`                                   | `FIXTURE_IDS.datasetVersion.id`                                            | `metadata.status === 'LOCKED'`, deterministic hash present, COCO schema valid |
+| 6   | `GET /api/projects/:projectId/inference-jobs`                                                            | `FIXTURE_IDS.inferenceJob.id`                                              | canonical job visible                                                         |
+| 7   | `GET /api/projects/:projectId/inference-jobs/:jobId/predictions`                                         | `FIXTURE_IDS.inferenceJob.id`                                              | at least 3 predictions                                                        |
+| 8   | `GET /api/projects/:projectId/inference-jobs/:jobId/evaluation`                                          | `FIXTURE_IDS.inferenceJob.id`                                              | `report.inputHash === FIXTURE_IDS.evaluation.inputHash`                       |
 
 **Behavior:**
+
 - `--strict` mode: exit 1 if `API_BASE_URL` is unreachable or any check fails
 - Non-strict: skip with instructions if API not running
 - No DB mutations
@@ -45,6 +46,7 @@ Uses `FIXTURE_IDS` from `scripts/fixtures/visionflow-fixtures.ts` as the single 
 Orchestrates Phase 22A meta-harness + Phase 22B API harness. DB-only checks always run. Live API checks run only when `--with-api` is passed or `API_BASE_URL` is reachable.
 
 **Behavior:**
+
 - `pnpm meta:harness:phase22b --strict`: runs Phase 22A meta-harness (DB-only), reports API skipped unless `--with-api`
 - `pnpm meta:harness:phase22b --strict --with-api`: runs Phase 22A meta-harness + Phase 22B API harness; fails if API unreachable
 - In CI: runs DB-only checks only
@@ -65,6 +67,7 @@ Focused smoke test proving seeded fixture surfaces are navigable in the browser.
 ### P1: CI Wiring (DB-only)
 
 **`.github/workflows/ci.yml`:**
+
 - Add `pnpm meta:harness:phase22b` to `db-harness` and `migration-chain` jobs after `harness:phase22a`
 - Live API harness NOT added to CI (requires booted stack)
 - `build` continues to depend on `db-harness` and `migration-chain`
@@ -80,18 +83,22 @@ Not implemented. GitHub Actions PostgreSQL service is sufficient for Phase 22B C
 ## Architecture Decisions
 
 ### API harness: HTTP client over Prisma
+
 Phase 22A verifies DB integrity. Phase 22B verifies API surface integrity. HTTP is the correct boundary — the harness exercises the full NestJS request pipeline including routing, guards, services, contracts, and Prisma queries.
 
 ### Strict mode skip vs fail
+
 - DB harnesses: strict mode requires DATABASE_URL
 - API harness: strict mode requires API_BASE_URL reachable
 - Meta-harness: strict mode always runs DB checks; API checks gated by `--with-api`
 - CI runs DB-only (no strict API requirement)
 
 ### No fixture factory helpers
+
 Phase 22A established that FIXTURE_IDS is the single source of truth. Phase 22B uses those IDs directly. No new fixture factory pattern is needed at this stage.
 
 ### COCO determinism check
+
 Calling the COCO endpoint twice and comparing deterministic hashes is sufficient proof of stability. Full content comparison is covered by Phase 20C's hash computation harness.
 
 ## Out of Scope

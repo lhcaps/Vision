@@ -5,12 +5,14 @@
 ### Severity: Informational
 
 **Fixture contract (`scripts/fixtures/visionflow-fixtures.ts`):**
+
 - Constants are `as const` — no accidental mutation
 - Exported as a typed `FixtureIds` for TypeScript consumers
 - Does not duplicate seed logic — imports nothing, only exports facts
 - `metricsHash` is not stored in the fixture contract — it is computed dynamically from the full report payload via `computeEvaluationMetricsHash()`. Verification is done via Check 15 in the harness.
 
 **Fixture harness (`scripts/harness/phase22a-fixture-infrastructure-check.ts`):**
+
 - Imports `FIXTURE_IDS` from `../fixtures/visionflow-fixtures` — all canonical IDs come from the fixture contract, not hard-coded literals
 - Uses `PrismaClient` with `log: []` — no noisy output
 - Strict mode: exits 1 if DATABASE_URL absent — correct for CI
@@ -22,6 +24,7 @@
 - Inline Phase 20D/20E/20F equivalence checks — avoids exec overhead while maintaining harness coverage
 
 **Meta-harness (`scripts/harness/phase22a-meta-harness.ts`):**
+
 - Uses `execSync` with `stdio: 'inherit'` — harnesses print directly to CI log — good visibility
 - Exit code captured from caught error — `status` field, not `signal`
 - No shell hiding — failures surface clearly
@@ -29,12 +32,14 @@
 - Runs in sequence (not parallel) — correct because harnesses share the same DB
 
 **CI wiring (`.github/workflows/ci.yml`):**
+
 - `harness:phase22a` added after `seed:db -- --reset` in both db-harness and migration-chain — correct placement
 - Existing phase20c/20d/20e/20f all preserved — no weakening
 - DATABASE_URL set for each harness step — correct
 - No Docker Compose added — correct (PostgreSQL service is sufficient for fixture harness)
 
 **package.json:**
+
 - Scripts use `--strict` flag — correct for CI
 - Both `harness:phase22a` and `meta:harness:phase22a` added
 

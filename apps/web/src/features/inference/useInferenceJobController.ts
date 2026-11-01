@@ -251,47 +251,44 @@ export function useInferenceJobController(): UseInferenceJobControllerResult {
     return () => window.clearInterval(timer);
   }, [job.id, job.source, job.status]);
 
-  const startJob = useCallback(
-    () => {
-      void (async () => {
+  const startJob = useCallback(() => {
+    void (async () => {
+      setJob((current) => ({
+        ...current,
+        status: 'QUEUED',
+        progress: 0,
+        source: current.source === 'fallback' ? 'loading' : current.source,
+        error: null,
+        logs: ['Resolving locked dataset version and persisted pipeline.'],
+      }));
+
+      try {
+        const target = await resolveInferenceRunTarget(demoSnapshot.project.id);
+        const response = await createInferenceJob(demoSnapshot.project.id, {
+          datasetVersionId: target.datasetVersionId,
+          pipelineId: target.pipelineId,
+          modelId: null,
+        });
+
+        setJob(
+          toJobUiState(response.job, 'api', [
+            'Queue accepted inference payload with IDs only.',
+            `Dataset ${target.datasetVersionLabel} and pipeline ${target.pipelineName} selected.`,
+          ])
+        );
+      } catch (error) {
+        const message = formatUiError(error);
         setJob((current) => ({
           ...current,
-          status: 'QUEUED',
-          progress: 0,
-          source: current.source === 'fallback' ? 'loading' : current.source,
-          error: null,
-          logs: ['Resolving locked dataset version and persisted pipeline.'],
+          status: 'FAILED',
+          progress: 100,
+          source: 'fallback',
+          error: message,
+          logs: [`Run failed: ${message}`].slice(-8),
         }));
-
-        try {
-          const target = await resolveInferenceRunTarget(demoSnapshot.project.id);
-          const response = await createInferenceJob(demoSnapshot.project.id, {
-            datasetVersionId: target.datasetVersionId,
-            pipelineId: target.pipelineId,
-            modelId: null,
-          });
-
-          setJob(
-            toJobUiState(response.job, 'api', [
-              'Queue accepted inference payload with IDs only.',
-              `Dataset ${target.datasetVersionLabel} and pipeline ${target.pipelineName} selected.`,
-            ])
-          );
-        } catch (error) {
-          const message = formatUiError(error);
-          setJob((current) => ({
-            ...current,
-            status: 'FAILED',
-            progress: 100,
-            source: 'fallback',
-            error: message,
-            logs: [`Run failed: ${message}`].slice(-8),
-          }));
-        }
-      })();
-    },
-    []
-  );
+      }
+    })();
+  }, []);
 
   return { job, startJob };
 }

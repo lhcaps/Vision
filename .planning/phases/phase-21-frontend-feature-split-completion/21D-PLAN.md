@@ -53,6 +53,7 @@ pipelineValidation={validatePipelineDefinition(demoSnapshot.pipeline)}
 For `annotate` and `pipeline` sections, the global `InspectorRouter` will render a non-interactive notice stating that the inspector is embedded in the workspace. For `media`, `datasets`, `jobs`, it continues rendering real data.
 
 This is preferred because:
+
 - `PipelinePanel` and `AnnotationEnginePanel` already own their inspector state locally
 - The global right rail inspector for those sections was always fake/secondary
 - Option A1 preserves the prop-surface gains from Phase 21C (no lifting state back to App root)
@@ -61,6 +62,7 @@ This is preferred because:
 ## Scope
 
 ### In Scope
+
 - Refactor `InspectorRouterProps` to remove: `annotations`, `selectedAnnotation`, `setSelectedAnnotation`, `threshold`, `setThreshold`, `pipelineSelectedNodeId`, `pipelineDefinition`, `pipelineValidation`
 - Update `InspectorRouter` to render honest embedded-notice panels for `annotate` and `pipeline`
 - Update `AppRoutes.tsx` to remove fake prop passings and unused imports (`validatePipelineDefinition`, `PipelineValidationResult`, `demoSnapshot.pipeline`)
@@ -73,6 +75,7 @@ This is preferred because:
 - Preserve `runtimeReadiness` flow
 
 ### Out of Scope
+
 - No backend changes
 - No Prisma/schema changes
 - No new product feature
@@ -125,20 +128,25 @@ type InspectorRouterProps = {
 ### Step 2 — Update InspectorRouter
 
 For `active === 'annotate'`:
+
 - Render `InspectorShell` with honest text: "Annotation inspector is embedded in the workspace panel."
 
 For `active === 'pipeline'`:
+
 - Render `InspectorShell` with honest text: "Pipeline node inspector is embedded in the Pipeline workspace."
 
 For `active === 'overview'`, `active === 'timeline'`, `active === 'diff'`:
+
 - Keep existing fallback (project name + job status)
 
 For `active === 'media'`, `active === 'datasets'`, `active === 'jobs'`:
+
 - Keep existing real inspector rendering (unchanged)
 
 ### Step 3 — Update AppRoutes.tsx
 
 Remove all fake prop passings to `InspectorRouter`:
+
 - Remove `annotations={[]}`
 - Remove `selectedAnnotation=""`
 - Remove `setSelectedAnnotation={() => {}}`
@@ -149,6 +157,7 @@ Remove all fake prop passings to `InspectorRouter`:
 - Remove `pipelineValidation={...}`
 
 Remove unused imports:
+
 - `validatePipelineDefinition` from `@visionflow/contracts`
 - `PipelineValidationResult` from `@visionflow/contracts`
 - `AnnotationSummary`, `PipelineDefinition`, `PipelineNode` (if only used for fake props)
@@ -169,6 +178,7 @@ Remove `AnnotationInspectorData` and `PipelineInspectorData` from `inspector.typ
 ### Step 6 — Audit imports
 
 Grep for the removed patterns in AppRoutes to confirm they're gone:
+
 - `annotations={[]}`
 - `setSelectedAnnotation`
 - `setThreshold`
@@ -178,17 +188,20 @@ Grep for the removed patterns in AppRoutes to confirm they're gone:
 ### Step 7 — Verify PipelinePanel self-containment
 
 Confirm `PipelinePanel`:
+
 - Renders `PipelineInspector` internally (confirmed: line ~346-361)
 - Does not depend on `InspectorRouter` for pipeline inspector state
 - Uses its own local `definition`, `validation`, `selectedNodeId`
 
 Confirm `AnnotationEnginePanel`:
+
 - Owns annotation state internally (confirmed from Phase 21C)
 - Does not depend on `InspectorRouter` for annotation state
 
 ### Step 8 — Circular dependency audit
 
 Check imports:
+
 - `app/` imports from `features/inspector/` — `InspectorRouter` only (AppRoutes.tsx)
 - `features/inspector/` imports from `@visionflow/contracts` — no app/ or feature-local imports
 - `features/inspector/` does NOT import from `app/`
@@ -207,12 +220,12 @@ Check imports:
 
 ### Files Changed
 
-| File | Change |
-|---|---|
-| `apps/web/src/features/inspector/InspectorRouter.tsx` | Remove 8 fake props; render honest embedded-notice for annotate/pipeline |
-| `apps/web/src/app/AppRoutes.tsx` | Remove fake prop passings; remove unused imports |
-| `apps/web/src/features/inspector/index.ts` | Update `InspectorRouterProps` type export (if shape changed) |
-| `apps/web/src/features/inspector/inspector.types.ts` | Remove `AnnotationInspectorData` and `PipelineInspectorData` (if unreferenced) |
+| File                                                  | Change                                                                         |
+| ----------------------------------------------------- | ------------------------------------------------------------------------------ |
+| `apps/web/src/features/inspector/InspectorRouter.tsx` | Remove 8 fake props; render honest embedded-notice for annotate/pipeline       |
+| `apps/web/src/app/AppRoutes.tsx`                      | Remove fake prop passings; remove unused imports                               |
+| `apps/web/src/features/inspector/index.ts`            | Update `InspectorRouterProps` type export (if shape changed)                   |
+| `apps/web/src/features/inspector/inspector.types.ts`  | Remove `AnnotationInspectorData` and `PipelineInspectorData` (if unreferenced) |
 
 ### Files Unchanged (guarded)
 

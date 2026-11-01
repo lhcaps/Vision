@@ -9,6 +9,7 @@
 ## Files Changed
 
 ### Extraction (Commit 86416bf)
+
 - `apps/web/src/App.tsx` — reduced from 799 to 638 lines
 - `apps/web/src/app/AppRoutes.tsx` — created (route rendering)
 - `apps/web/src/app/OverviewPanel.tsx` — extracted
@@ -22,21 +23,23 @@
 - `apps/web/src/app/ui/OverviewStateRow.tsx` — extracted
 
 ### Cleanup Round 1 (Commit 27d78bb)
+
 - `apps/web/src/App.tsx` — reduced from 638 to 548 lines
 - `apps/web/src/app/AppRoutes.tsx` — import cleanup
 
 **Audit finding:** Commit 27d78bb left residual unused imports (see below).
 
 ### Cleanup Round 2 — Leftovers Fix (Commit 2f3a1c4)
+
 - `apps/web/src/App.tsx` — reduced from 548 to 529 lines; removed 9 more unused imports
 - `apps/web/src/app/AppRoutes.tsx` — removed 2 unused type imports
 
 ## Line Counts
 
-| File | Before Phase 21A | After Extraction (86416bf) | After Cleanup R1 (27d78bb) | After Cleanup R2 (2f3a1c4) |
-|---|---|---|---|---|
-| `App.tsx` | 799 | 638 | 548 | **529** |
-| `AppRoutes.tsx` | N/A | 206 | 209 | 210 |
+| File            | Before Phase 21A | After Extraction (86416bf) | After Cleanup R1 (27d78bb) | After Cleanup R2 (2f3a1c4) |
+| --------------- | ---------------- | -------------------------- | -------------------------- | -------------------------- |
+| `App.tsx`       | 799              | 638                        | 548                        | **529**                    |
+| `AppRoutes.tsx` | N/A              | 206                        | 209                        | 210                        |
 
 ## What Changed (Cleanup Pass — All Rounds)
 
@@ -52,10 +55,12 @@
 `Panel`, `OverviewPanel`, `MediaPanel`, `DatasetPanel`, `PipelinePanel`, `JobsPanel`, `VisionPreview`, `StateRow`, `buildDatasetInspectorData`, `buildMediaInspectorData`, `AnnotationEnginePanel`, `AnnotationInspector`, `DatasetInspector`, `InspectorRouter`, `JobInspector`, `MediaInspector`, `PipelineInspector`, `EmptyState`, `EvaluationEmptyState`, `MediaEmptyState`, `DatasetEmptyState`, `PredictionsEmptyState`, `ErrorState`, `FailedJobErrorState`, `ActionHint`, `Background`, `Controls`, `Edge as FlowEdge`, `MarkerType`, `Node as FlowNode`, `Position`, `ReactFlow`, `AnimatePresence`, `motion`, `useReducedMotion`, `motionTokens`, `createEmptySplitSummary`, `SplitSummary`, `summarizeDatasetSplits`, `validateMediaMime`, `EvaluationMetricsPanel`, `PredictionOverlayCanvas`, `TimelineReplayPanel`, `DatasetVersionDiff`, `PipelineExecutionFlow`, `assignDatasetVersionAssets`, `createDataset`, `createDatasetVersion`, `lockDatasetVersion`, `checksumFile`, `uploadMediaFile`, `updateProjectPipeline`, `validateProjectPipeline`, `canShowPredictionOverlay`, `datasetSplits`, `DatasetActionState`, `DatasetSourceState`, `PipelineSourceState`
 
 **Removed dead derived values (2):**
+
 - `visibleMediaRows` — duplicated; `AppRoutes.tsx` computes it independently
 - `showPipelineExecution` — computed but never consumed
 
 **Removed unused hook (1):**
+
 - `useRef`
 
 ### Import Cleanup in `App.tsx` — Round 2 (2f3a1c4) — Leftovers Found by Audit
@@ -77,18 +82,18 @@ These were not used in the App component's JSX render or helper functions.
 
 ## Verification Results
 
-| Command | Result | Notes |
-|---|---|---|
-| `pnpm --filter @visionflow/web typecheck` | **PASS** | |
-| `pnpm --filter @visionflow/web test` | **PASS** | 63/63 |
-| `pnpm --filter @visionflow/web lint` | **PASS** | |
-| `pnpm --filter @visionflow/web build` | **PASS** | |
-| `pnpm --filter @visionflow/web prettier --check` | **PASS** | Touched files only |
-| `pnpm typecheck` (root) | **PASS** | |
-| `pnpm test` (root) | **PARTIAL FAIL** | 1 pre-existing flaky API test in `inference.service.test.ts` — CV_WORKER_URL timeout, unrelated to Phase 21A |
-| `pnpm lint` (root) | **PASS** | |
-| `pnpm format:check` (root) | **FAIL** | 17 pre-existing formatting failures in unrelated files |
-| Browser smoke | Not run | Verification limited to typecheck/test/build/lint |
+| Command                                          | Result           | Notes                                                                                                        |
+| ------------------------------------------------ | ---------------- | ------------------------------------------------------------------------------------------------------------ |
+| `pnpm --filter @visionflow/web typecheck`        | **PASS**         |                                                                                                              |
+| `pnpm --filter @visionflow/web test`             | **PASS**         | 63/63                                                                                                        |
+| `pnpm --filter @visionflow/web lint`             | **PASS**         |                                                                                                              |
+| `pnpm --filter @visionflow/web build`            | **PASS**         |                                                                                                              |
+| `pnpm --filter @visionflow/web prettier --check` | **PASS**         | Touched files only                                                                                           |
+| `pnpm typecheck` (root)                          | **PASS**         |                                                                                                              |
+| `pnpm test` (root)                               | **PARTIAL FAIL** | 1 pre-existing flaky API test in `inference.service.test.ts` — CV_WORKER_URL timeout, unrelated to Phase 21A |
+| `pnpm lint` (root)                               | **PASS**         |                                                                                                              |
+| `pnpm format:check` (root)                       | **FAIL**         | 17 pre-existing formatting failures in unrelated files                                                       |
+| Browser smoke                                    | Not run          | Verification limited to typecheck/test/build/lint                                                            |
 
 ### Pre-existing Failures (Not From Phase 21A)
 
@@ -98,12 +103,12 @@ These were not used in the App component's JSX render or helper functions.
 
 ## Boundary Review
 
-| Direction | Status |
-|---|---|
-| `app/` imports `features/` | Clean — `AppRoutes.tsx` imports from `features/annotations`, `features/timeline`, `features/inspector`, `features/media`, `features/inference` |
-| `features/` imports `app/` | Clean — no `features/*` files import from `app/` |
-| `shared/` imports `app/` or `features/` | Clean — no `shared/*` files import from `app/` or `features/` |
-| Circular dependencies | None detected |
+| Direction                               | Status                                                                                                                                         |
+| --------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------- |
+| `app/` imports `features/`              | Clean — `AppRoutes.tsx` imports from `features/annotations`, `features/timeline`, `features/inspector`, `features/media`, `features/inference` |
+| `features/` imports `app/`              | Clean — no `features/*` files import from `app/`                                                                                               |
+| `shared/` imports `app/` or `features/` | Clean — no `shared/*` files import from `app/` or `features/`                                                                                  |
+| Circular dependencies                   | None detected                                                                                                                                  |
 
 ## Remaining Limitations
 

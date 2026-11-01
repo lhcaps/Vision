@@ -62,9 +62,7 @@ function deriveApiState(data: RuntimeStatusResponse['api']): ApiReadinessState {
   return { kind: 'unavailable' };
 }
 
-function deriveDatabaseState(
-  data: RuntimeStatusResponse['database']
-): DatabaseReadinessState {
+function deriveDatabaseState(data: RuntimeStatusResponse['database']): DatabaseReadinessState {
   switch (data.status) {
     case 'ready':
       return { kind: 'ready' };

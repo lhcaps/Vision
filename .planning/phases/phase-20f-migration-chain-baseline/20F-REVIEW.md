@@ -111,12 +111,12 @@ None. Phase 20F adds infrastructure (baseline migration, CI job, harness) that i
 
 ## Outstanding Limitations
 
-| Limitation                                              | Severity | Acceptable?                                                 |
-| ------------------------------------------------------- | -------- | ----------------------------------------------------------- |
-| Local harness exec() fails for `@visionflow/contracts`  | LOW      | Yes — CI runs proper subprocesses, inline checks cover locally |
-| `db:migrate:deploy` not tested offline/air-gapped       | LOW      | Yes — CI environment has network access                     |
-| `reset-schema.sql.ts` is destructive                    | LOW      | Yes — dev-only utility, clearly labeled                     |
-| Baseline includes Phase 20D/20E columns at init         | LOW      | Yes — new DBs should have full schema from start            |
+| Limitation                                             | Severity | Acceptable?                                                    |
+| ------------------------------------------------------ | -------- | -------------------------------------------------------------- |
+| Local harness exec() fails for `@visionflow/contracts` | LOW      | Yes — CI runs proper subprocesses, inline checks cover locally |
+| `db:migrate:deploy` not tested offline/air-gapped      | LOW      | Yes — CI environment has network access                        |
+| `reset-schema.sql.ts` is destructive                   | LOW      | Yes — dev-only utility, clearly labeled                        |
+| Baseline includes Phase 20D/20E columns at init        | LOW      | Yes — new DBs should have full schema from start               |
 
 ## Verification
 

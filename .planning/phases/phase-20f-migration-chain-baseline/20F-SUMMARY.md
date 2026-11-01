@@ -111,6 +111,7 @@ Note: Sub-harness checks use inline DB queries instead of `exec()` to avoid loca
 All gates pass: `pnpm db:generate`, `pnpm typecheck`, `pnpm build`, `pnpm lint`.
 
 Migration chain verified end-to-end:
+
 1. Fresh DB: `pnpm db:migrate:deploy` — all 3 migrations applied
 2. `pnpm db:migrate:status` — clean (3 applied, 0 pending, 0 failed)
 3. `pnpm seed:db -- --reset` — seed data created
@@ -119,24 +120,24 @@ Migration chain verified end-to-end:
 
 ## Success Criteria
 
-| #   | Criterion                                                      | Status |
-| --- | -------------------------------------------------------------- | ------ |
-| 1   | Baseline migration `00000000000000_init` exists                | ✅     |
-| 2   | Baseline covers all 16 models, all enums, all constraints     | ✅     |
-| 3   | Fresh DB runs `db:migrate:deploy` without failing              | ✅     |
-| 4   | Phase 20E patch migration idempotent after baseline             | ✅     |
-| 5   | `db:migrate:deploy` and `db:migrate:status` scripts exist      | ✅     |
-| 6   | Phase 20F harness verifies 11 DB integrity points              | ✅     |
-| 7   | CI has `migration-chain` job proving deploy from fresh DB      | ✅     |
-| 8   | `build` job depends on `migration-chain`                       | ✅     |
-| 9   | Backfill script correctly handles `null` row + valid JSON       | ✅     |
-| 10  | Backfill script validates JSON hash format before applying      | ✅     |
-| 11  | Phase 20E `logFail` is red                                     | ✅     |
-| 12  | Phase 20E latest report uses `ORDER BY createdAt DESC`          | ✅     |
-| 13  | Phase 20F planning artifacts complete                          | ✅     |
-| 14  | STATE/ROADMAP/MILESTONES updated                               | ✅     |
-| 15  | README updated                                                  | ✅     |
-| 16  | Documentation distinguishes `db:push` (dev) from `migrate:deploy` (prod) | ✅ |
+| #   | Criterion                                                                | Status |
+| --- | ------------------------------------------------------------------------ | ------ |
+| 1   | Baseline migration `00000000000000_init` exists                          | ✅     |
+| 2   | Baseline covers all 16 models, all enums, all constraints                | ✅     |
+| 3   | Fresh DB runs `db:migrate:deploy` without failing                        | ✅     |
+| 4   | Phase 20E patch migration idempotent after baseline                      | ✅     |
+| 5   | `db:migrate:deploy` and `db:migrate:status` scripts exist                | ✅     |
+| 6   | Phase 20F harness verifies 11 DB integrity points                        | ✅     |
+| 7   | CI has `migration-chain` job proving deploy from fresh DB                | ✅     |
+| 8   | `build` job depends on `migration-chain`                                 | ✅     |
+| 9   | Backfill script correctly handles `null` row + valid JSON                | ✅     |
+| 10  | Backfill script validates JSON hash format before applying               | ✅     |
+| 11  | Phase 20E `logFail` is red                                               | ✅     |
+| 12  | Phase 20E latest report uses `ORDER BY createdAt DESC`                   | ✅     |
+| 13  | Phase 20F planning artifacts complete                                    | ✅     |
+| 14  | STATE/ROADMAP/MILESTONES updated                                         | ✅     |
+| 15  | README updated                                                           | ✅     |
+| 16  | Documentation distinguishes `db:push` (dev) from `migrate:deploy` (prod) | ✅     |
 
 ## Phase 20 Evaluation Subsystem — Final Score: 10/10
 

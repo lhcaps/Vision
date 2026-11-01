@@ -60,11 +60,7 @@ interface HarnessResult {
   error?: string;
 }
 
-function runHarness(
-  cmd: string,
-  label: string,
-  cwd?: string,
-): HarnessResult {
+function runHarness(cmd: string, label: string, cwd?: string): HarnessResult {
   const start = Date.now();
   log(`Running: ${cmd}`);
   try {
@@ -96,8 +92,7 @@ function createTimeoutSignal(ms: number): AbortSignal {
 }
 
 async function isApiReachable(): Promise<boolean> {
-  const API_BASE_URL =
-    process.env.API_BASE_URL || 'http://localhost:3000/api';
+  const API_BASE_URL = process.env.API_BASE_URL || 'http://localhost:3000/api';
   try {
     const res = await fetch(`${API_BASE_URL.replace(/\/$/, '')}/health`, {
       signal: createTimeoutSignal(5_000),
@@ -109,8 +104,7 @@ async function isApiReachable(): Promise<boolean> {
 }
 
 async function isWebReachable(): Promise<boolean> {
-  const WEB_BASE_URL =
-    process.env.VITE_WEB_BASE_URL || 'http://localhost:5173';
+  const WEB_BASE_URL = process.env.VITE_WEB_BASE_URL || 'http://localhost:5173';
   try {
     const res = await fetch(WEB_BASE_URL, {
       signal: createTimeoutSignal(5_000),
@@ -151,10 +145,7 @@ async function main() {
   // ── Preflight: check stack reachability ────────────────────────────────────
   console.log('');
 
-  const [apiReachable, webReachable] = await Promise.all([
-    isApiReachable(),
-    isWebReachable(),
-  ]);
+  const [apiReachable, webReachable] = await Promise.all([isApiReachable(), isWebReachable()]);
 
   if (!apiReachable || !webReachable) {
     if (strict) {
@@ -181,7 +172,7 @@ async function main() {
 
   const phase22bResult = runHarness(
     'pnpm meta:harness:phase22b -- --strict --with-api',
-    'phase22b-meta-harness',
+    'phase22b-meta-harness'
   );
   allResults.push(phase22bResult);
 
@@ -189,7 +180,7 @@ async function main() {
     logPass(`phase22b-meta-harness PASSED (${phase22bResult.durationMs}ms)`);
   } else {
     logFail(
-      `phase22b-meta-harness FAILED (${phase22bResult.durationMs}ms) — ${phase22bResult.error}`,
+      `phase22b-meta-harness FAILED (${phase22bResult.durationMs}ms) — ${phase22bResult.error}`
     );
     console.log('');
     logFail('Phase 22B meta-harness must pass before Phase 23 Playwright tests run.');
@@ -206,7 +197,7 @@ async function main() {
   const playwrightResult = runHarness(
     'pnpm exec playwright test e2e/full-vertical-slice.spec.ts',
     'playwright-full-vertical-slice',
-    webDir,
+    webDir
   );
   allResults.push(playwrightResult);
 
@@ -214,7 +205,7 @@ async function main() {
     logPass(`playwright-full-vertical-slice PASSED (${playwrightResult.durationMs}ms)`);
   } else {
     logFail(
-      `playwright-full-vertical-slice FAILED (${playwrightResult.durationMs}ms) — ${playwrightResult.error}`,
+      `playwright-full-vertical-slice FAILED (${playwrightResult.durationMs}ms) — ${playwrightResult.error}`
     );
   }
 
@@ -243,9 +234,7 @@ async function main() {
       .map((r) => r.name)
       .join(', ');
     console.log('');
-    logFail(
-      `Phase 23 meta harness FAILED — ${failed} harness(es) failed: ${failedNames}`,
-    );
+    logFail(`Phase 23 meta harness FAILED — ${failed} harness(es) failed: ${failedNames}`);
     process.exit(1);
   }
 

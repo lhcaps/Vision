@@ -96,9 +96,9 @@ async function main() {
 
     // ── Check 1: _prisma_migrations table exists ──────────────────────────────
     {
-      const tableExists = await prisma.$queryRawUnsafe(
+      const tableExists = (await prisma.$queryRawUnsafe(
         "SELECT EXISTS (SELECT FROM information_schema.tables WHERE table_schema = 'public' AND table_name = '_prisma_migrations') AS exists"
-      ) as Array<{ exists: boolean }>;
+      )) as Array<{ exists: boolean }>;
 
       const passed = tableExists[0]?.exists === true;
       results.push({
@@ -113,11 +113,20 @@ async function main() {
 
     // ── Check 2: Baseline migration applied ──────────────────────────────────
     {
-      const baseline = await prisma.$queryRawUnsafe(
+      const baseline = (await prisma.$queryRawUnsafe(
         "SELECT migration_name, finished_at, rolled_back_at, started_at, applied_steps_count FROM _prisma_migrations WHERE migration_name = '00000000000000_init' ORDER BY finished_at DESC LIMIT 1"
-      ) as Array<{ migration_name: string; finished_at: string | null; rolled_back_at: string | null; started_at: string; applied_steps_count: number }>;
+      )) as Array<{
+        migration_name: string;
+        finished_at: string | null;
+        rolled_back_at: string | null;
+        started_at: string;
+        applied_steps_count: number;
+      }>;
 
-      const passed = baseline.length > 0 && baseline[0].finished_at !== null && baseline[0].rolled_back_at === null;
+      const passed =
+        baseline.length > 0 &&
+        baseline[0].finished_at !== null &&
+        baseline[0].rolled_back_at === null;
       results.push({
         name: 'Baseline migration 00000000000000_init is applied',
         passed,
@@ -139,11 +148,18 @@ async function main() {
 
     // ── Check 3: Phase 20E migration applied ─────────────────────────────────
     {
-      const patch = await prisma.$queryRawUnsafe(
+      const patch = (await prisma.$queryRawUnsafe(
         "SELECT migration_name, finished_at, rolled_back_at, started_at, applied_steps_count FROM _prisma_migrations WHERE migration_name = '20260504_evaluation_report_integrity_columns' ORDER BY finished_at DESC LIMIT 1"
-      ) as Array<{ migration_name: string; finished_at: string | null; rolled_back_at: string | null; started_at: string; applied_steps_count: number }>;
+      )) as Array<{
+        migration_name: string;
+        finished_at: string | null;
+        rolled_back_at: string | null;
+        started_at: string;
+        applied_steps_count: number;
+      }>;
 
-      const passed = patch.length > 0 && patch[0].finished_at !== null && patch[0].rolled_back_at === null;
+      const passed =
+        patch.length > 0 && patch[0].finished_at !== null && patch[0].rolled_back_at === null;
       results.push({
         name: 'Phase 20E migration 20260504_evaluation_report_integrity_columns is applied',
         passed,
@@ -156,8 +172,7 @@ async function main() {
 
       if (passed)
         logPass('Phase 20E migration applied: 20260504_evaluation_report_integrity_columns');
-      else if (patch.length === 0)
-        logFail('Phase 20E migration NOT FOUND in _prisma_migrations');
+      else if (patch.length === 0) logFail('Phase 20E migration NOT FOUND in _prisma_migrations');
       else
         logFail(
           `Phase 20E migration status: finished=${patch[0].finished_at}, rolled_back=${patch[0].rolled_back_at}`
@@ -166,9 +181,15 @@ async function main() {
 
     // ── Check 4: No failed migrations ─────────────────────────────────────────
     {
-      const failed = await prisma.$queryRawUnsafe(
-        "SELECT migration_name, finished_at, rolled_back_at, started_at, applied_steps_count FROM _prisma_migrations WHERE finished_at IS NULL AND rolled_back_at IS NULL ORDER BY started_at ASC"
-      ) as Array<{ migration_name: string; finished_at: string | null; rolled_back_at: string | null; started_at: string; applied_steps_count: number }>;
+      const failed = (await prisma.$queryRawUnsafe(
+        'SELECT migration_name, finished_at, rolled_back_at, started_at, applied_steps_count FROM _prisma_migrations WHERE finished_at IS NULL AND rolled_back_at IS NULL ORDER BY started_at ASC'
+      )) as Array<{
+        migration_name: string;
+        finished_at: string | null;
+        rolled_back_at: string | null;
+        started_at: string;
+        applied_steps_count: number;
+      }>;
 
       const passed = failed.length === 0;
       results.push({
@@ -188,10 +209,16 @@ async function main() {
 
     // ── Check 5: All expected tables exist ──────────────────────────────────
     {
-      const expectedTables = ['Project', 'DatasetVersion', 'EvaluationReport', 'InferenceJob', 'Prediction'];
-      const tables = await prisma.$queryRawUnsafe(
+      const expectedTables = [
+        'Project',
+        'DatasetVersion',
+        'EvaluationReport',
+        'InferenceJob',
+        'Prediction',
+      ];
+      const tables = (await prisma.$queryRawUnsafe(
         "SELECT table_name FROM information_schema.tables WHERE table_schema = 'public' AND table_type = 'BASE TABLE'"
-      ) as Array<{ table_name: string }>;
+      )) as Array<{ table_name: string }>;
 
       const foundTables = new Set(tables.map((t) => t.table_name));
       const missing = expectedTables.filter((t) => !foundTables.has(t));
@@ -209,14 +236,19 @@ async function main() {
 
     // ── Check 6: EvaluationReport integrity columns exist ──────────────────────
     {
-      const columns = await prisma.$queryRawUnsafe(
+      const columns = (await prisma.$queryRawUnsafe(
         "SELECT column_name FROM information_schema.columns WHERE table_name = 'EvaluationReport' AND column_name IN ('datasetVersionId', 'pipelineId', 'modelId', 'algorithmVersion', 'iouThreshold', 'inputHash', 'metricsHash')"
-      ) as Array<{ column_name: string }>;
+      )) as Array<{ column_name: string }>;
 
       const foundCols = new Set(columns.map((c) => c.column_name));
       const requiredCols = [
-        'datasetVersionId', 'pipelineId', 'modelId', 'algorithmVersion',
-        'iouThreshold', 'inputHash', 'metricsHash',
+        'datasetVersionId',
+        'pipelineId',
+        'modelId',
+        'algorithmVersion',
+        'iouThreshold',
+        'inputHash',
+        'metricsHash',
       ];
       const missing = requiredCols.filter((c) => !foundCols.has(c));
 
@@ -233,9 +265,9 @@ async function main() {
 
     // ── Check 7: Unique index for [inferenceJobId, inputHash] exists ──────────
     {
-      const indexes = await prisma.$queryRawUnsafe(
+      const indexes = (await prisma.$queryRawUnsafe(
         "SELECT indexname, indexdef FROM pg_indexes WHERE tablename = 'EvaluationReport' AND indexdef LIKE '%UNIQUE%'"
-      ) as Array<{ indexname: string; indexdef: string }>;
+      )) as Array<{ indexname: string; indexdef: string }>;
 
       const uniqueIndex = indexes.find(
         (i) => i.indexdef.includes('"inferenceJobId"') && i.indexdef.includes('"inputHash"')
@@ -254,9 +286,9 @@ async function main() {
 
     // ── Check 8: At least one EvaluationReport row exists ────────────────────
     {
-      const count = await prisma.$queryRawUnsafe(
+      const count = (await prisma.$queryRawUnsafe(
         'SELECT COUNT(*)::bigint AS count FROM "EvaluationReport"'
-      ) as Array<{ count: bigint }>;
+      )) as Array<{ count: bigint }>;
 
       const rowCount = Number(count[0]?.count ?? 0);
       const passed = rowCount >= 1;
@@ -275,25 +307,27 @@ async function main() {
     {
       const checks: { name: string; passed: boolean }[] = [];
 
-      const cols = await prisma.$queryRawUnsafe(
+      const cols = (await prisma.$queryRawUnsafe(
         "SELECT column_name FROM information_schema.columns WHERE table_name = 'EvaluationReport' AND column_name IN ('datasetVersionId', 'pipelineId', 'modelId', 'algorithmVersion', 'iouThreshold', 'inputHash', 'metricsHash')"
-      ) as Array<{ column_name: string }>;
+      )) as Array<{ column_name: string }>;
       checks.push({ name: 'All 7 integrity columns present', passed: cols.length >= 7 });
 
-      const notNull = await prisma.$queryRawUnsafe(
+      const notNull = (await prisma.$queryRawUnsafe(
         "SELECT column_name FROM information_schema.columns WHERE table_name = 'EvaluationReport' AND column_name IN ('datasetVersionId', 'algorithmVersion', 'iouThreshold', 'inputHash', 'metricsHash') AND is_nullable = 'NO'"
-      ) as Array<{ column_name: string }>;
+      )) as Array<{ column_name: string }>;
       checks.push({ name: 'Required columns NOT NULL', passed: notNull.length >= 5 });
 
-      const indexes = await prisma.$queryRawUnsafe(
+      const indexes = (await prisma.$queryRawUnsafe(
         "SELECT indexname, indexdef FROM pg_indexes WHERE tablename = 'EvaluationReport' AND indexdef LIKE '%UNIQUE%'"
-      ) as Array<{ indexname: string; indexdef: string }>;
-      const hasUnique = indexes.some((i) => i.indexdef.includes('"inferenceJobId"') && i.indexdef.includes('"inputHash"'));
+      )) as Array<{ indexname: string; indexdef: string }>;
+      const hasUnique = indexes.some(
+        (i) => i.indexdef.includes('"inferenceJobId"') && i.indexdef.includes('"inputHash"')
+      );
       checks.push({ name: 'Unique index for [inferenceJobId, inputHash]', passed: hasUnique });
 
-      const rows = await prisma.$queryRawUnsafe(
+      const rows = (await prisma.$queryRawUnsafe(
         'SELECT "inputHash", "metricsHash", "metricsJson" FROM "EvaluationReport"'
-      ) as Array<Record<string, unknown>>;
+      )) as Array<Record<string, unknown>>;
       const allHashesValid = rows.every((r) => {
         const inputHash = r['inputHash'] as string | null;
         const metricsHash = r['metricsHash'] as string | null;
@@ -308,12 +342,18 @@ async function main() {
         }
         return true;
       });
-      checks.push({ name: 'All row data consistent with JSON', passed: rows.length === 0 || allHashesValid });
+      checks.push({
+        name: 'All row data consistent with JSON',
+        passed: rows.length === 0 || allHashesValid,
+      });
 
-      const duplicates = await prisma.$queryRawUnsafe(
+      const duplicates = (await prisma.$queryRawUnsafe(
         'SELECT "inferenceJobId", "inputHash", COUNT(*)::int AS cnt FROM "EvaluationReport" GROUP BY "inferenceJobId", "inputHash" HAVING COUNT(*) > 1'
-      ) as Array<{ inferenceJobId: string; inputHash: string; cnt: number }>;
-      checks.push({ name: 'No duplicate [inferenceJobId, inputHash] groups', passed: duplicates.length === 0 });
+      )) as Array<{ inferenceJobId: string; inputHash: string; cnt: number }>;
+      checks.push({
+        name: 'No duplicate [inferenceJobId, inputHash] groups',
+        passed: duplicates.length === 0,
+      });
 
       const allPassed = checks.every((c) => c.passed);
       results.push({
@@ -321,7 +361,10 @@ async function main() {
         passed: allPassed,
         details: allPassed
           ? 'columns, NOT NULL, unique index, hash consistency, no duplicates'
-          : checks.filter((c) => !c.passed).map((c) => c.name).join('; '),
+          : checks
+              .filter((c) => !c.passed)
+              .map((c) => c.name)
+              .join('; '),
       });
 
       if (allPassed) logPass('Phase 20E harness equivalence: all inline checks passed');
@@ -340,17 +383,33 @@ async function main() {
       const checks: { name: string; passed: boolean }[] = [];
 
       // Check 1: EvaluationReport row exists for demo job
-      const reportRows = await prisma.$queryRawUnsafe(
+      const reportRows = (await prisma.$queryRawUnsafe(
         'SELECT "id", "datasetVersionId", "algorithmVersion", "iouThreshold", "inputHash", "metricsHash", "metricsJson" FROM "EvaluationReport" WHERE "inferenceJobId" = $1 ORDER BY "createdAt" DESC LIMIT 1',
         DEMO_JOB_ID
-      ) as Array<{ id: string; datasetVersionId: string; algorithmVersion: string; iouThreshold: number; inputHash: string; metricsHash: string; metricsJson: Record<string, unknown> }>;
-      checks.push({ name: 'EvaluationReport row exists for demo job', passed: reportRows.length >= 1 });
+      )) as Array<{
+        id: string;
+        datasetVersionId: string;
+        algorithmVersion: string;
+        iouThreshold: number;
+        inputHash: string;
+        metricsHash: string;
+        metricsJson: Record<string, unknown>;
+      }>;
+      checks.push({
+        name: 'EvaluationReport row exists for demo job',
+        passed: reportRows.length >= 1,
+      });
 
       if (reportRows.length >= 1) {
         const row = reportRows[0];
 
         // Check 2: New DB columns are non-null
-        const nonNull = row.datasetVersionId !== null && row.algorithmVersion !== null && row.iouThreshold !== null && row.inputHash !== null && row.metricsHash !== null;
+        const nonNull =
+          row.datasetVersionId !== null &&
+          row.algorithmVersion !== null &&
+          row.iouThreshold !== null &&
+          row.inputHash !== null &&
+          row.metricsHash !== null;
         checks.push({ name: 'New DB columns non-null', passed: nonNull });
 
         // Check 3: row.inputHash === metricsJson.inputHash
@@ -368,17 +427,20 @@ async function main() {
       }
 
       // Check 6: Predictions exist
-      const predCount = await prisma.$queryRawUnsafe(
+      const predCount = (await prisma.$queryRawUnsafe(
         'SELECT COUNT(*)::bigint AS cnt FROM "Prediction"'
-      ) as Array<{ cnt: bigint }>;
+      )) as Array<{ cnt: bigint }>;
       checks.push({ name: 'Predictions exist', passed: Number(predCount[0]?.cnt ?? 0) > 0 });
 
       // Check 7: No stale QUEUED/RUNNING seeded jobs for demo project
-      const staleJobs = await prisma.$queryRawUnsafe(
+      const staleJobs = (await prisma.$queryRawUnsafe(
         'SELECT "id" FROM "InferenceJob" WHERE "projectId" = $1 AND "status" IN (\'QUEUED\',\'RUNNING\') LIMIT 1',
         'proj_parking_lot'
-      ) as Array<{ id: string }>;
-      checks.push({ name: 'No stale QUEUED/RUNNING jobs for demo project', passed: staleJobs.length === 0 });
+      )) as Array<{ id: string }>;
+      checks.push({
+        name: 'No stale QUEUED/RUNNING jobs for demo project',
+        passed: staleJobs.length === 0,
+      });
 
       const allPassed = checks.every((c) => c.passed);
       results.push({
@@ -386,7 +448,10 @@ async function main() {
         passed: allPassed,
         details: allPassed
           ? 'report exists, all columns non-null, hashes valid, predictions exist, no stale jobs'
-          : checks.filter((c) => !c.passed).map((c) => c.name).join('; '),
+          : checks
+              .filter((c) => !c.passed)
+              .map((c) => c.name)
+              .join('; '),
       });
 
       if (allPassed) logPass('Phase 20D harness equivalence: all inline checks passed');
@@ -404,28 +469,34 @@ async function main() {
       const checks: { name: string; passed: boolean }[] = [];
 
       // Check 1: Dataset version is LOCKED
-      const dvLocked = await prisma.$queryRawUnsafe(
-        "SELECT \"id\" FROM \"DatasetVersion\" WHERE \"status\" = 'LOCKED' LIMIT 1"
-      ) as Array<{ id: string }>;
+      const dvLocked = (await prisma.$queryRawUnsafe(
+        'SELECT "id" FROM "DatasetVersion" WHERE "status" = \'LOCKED\' LIMIT 1'
+      )) as Array<{ id: string }>;
       checks.push({ name: 'Dataset version is LOCKED', passed: dvLocked.length >= 1 });
 
       // Check 2: InferenceJob is SUCCEEDED
-      const jobSucc = await prisma.$queryRawUnsafe(
-        "SELECT \"id\" FROM \"InferenceJob\" WHERE \"status\" = 'SUCCEEDED' LIMIT 1"
-      ) as Array<{ id: string }>;
-      checks.push({ name: 'At least one SUCCEEDED InferenceJob exists', passed: jobSucc.length >= 1 });
+      const jobSucc = (await prisma.$queryRawUnsafe(
+        'SELECT "id" FROM "InferenceJob" WHERE "status" = \'SUCCEEDED\' LIMIT 1'
+      )) as Array<{ id: string }>;
+      checks.push({
+        name: 'At least one SUCCEEDED InferenceJob exists',
+        passed: jobSucc.length >= 1,
+      });
 
       // Check 3: Predictions found (>0)
-      const predCount = await prisma.$queryRawUnsafe(
+      const predCount = (await prisma.$queryRawUnsafe(
         'SELECT COUNT(*)::bigint AS cnt FROM "Prediction"'
-      ) as Array<{ cnt: bigint }>;
+      )) as Array<{ cnt: bigint }>;
       checks.push({ name: 'Predictions found (>0)', passed: Number(predCount[0]?.cnt ?? 0) > 0 });
 
       // Check 4: EvaluationReport found (>0)
-      const reportCount = await prisma.$queryRawUnsafe(
+      const reportCount = (await prisma.$queryRawUnsafe(
         'SELECT COUNT(*)::bigint AS cnt FROM "EvaluationReport"'
-      ) as Array<{ cnt: bigint }>;
-      checks.push({ name: 'EvaluationReport found (>0)', passed: Number(reportCount[0]?.cnt ?? 0) > 0 });
+      )) as Array<{ cnt: bigint }>;
+      checks.push({
+        name: 'EvaluationReport found (>0)',
+        passed: Number(reportCount[0]?.cnt ?? 0) > 0,
+      });
 
       const allPassed = checks.every((c) => c.passed);
       results.push({
@@ -433,7 +504,10 @@ async function main() {
         passed: allPassed,
         details: allPassed
           ? 'dataset locked, job succeeded, predictions found, report exists'
-          : checks.filter((c) => !c.passed).map((c) => c.name).join('; '),
+          : checks
+              .filter((c) => !c.passed)
+              .map((c) => c.name)
+              .join('; '),
       });
 
       if (allPassed) logPass('Phase 20C harness equivalence: all inline checks passed');

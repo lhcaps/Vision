@@ -10,13 +10,13 @@ This does not mean the project is abandoned. Future development is intentionally
 
 ## Current Classification
 
-| Area                  | Status                                 |
-| --------------------- | -------------------------------------- |
-| Engineering proof     | Complete                               |
-| Product prototype proof | Complete                             |
-| Portfolio readiness   | Mostly complete                        |
-| Demo media            | Deferred                               |
-| Production SaaS readiness | Out of scope                     |
+| Area                      | Status          |
+| ------------------------- | --------------- |
+| Engineering proof         | Complete        |
+| Product prototype proof   | Complete        |
+| Portfolio readiness       | Mostly complete |
+| Demo media                | Deferred        |
+| Production SaaS readiness | Out of scope    |
 
 VisionFlow should currently be understood as a **local/private computer vision workbench prototype** with production-style engineering boundaries. It is not yet a public SaaS product.
 
